@@ -5,6 +5,9 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://THU-CVML.github.io',
                 'git_url': 'https://github.com/THU-CVML/ScholarlyInfrastructure',
                 'lib_path': 'scholarly_infrastructure'},
-  'syms': { 'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (core functionalities of this lib) '
+  'syms': { 'scholarly_infrastructure.help': { 'scholarly_infrastructure.help.combine_bilingual_pretty': ( 'help (library '
+                                                                                                           'information).html#combine_bilingual_pretty',
+                                                                                                           'scholarly_infrastructure/help.py')},
+            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (core functionalities of this lib) '
                                                                                             '.html#foo',
                                                                                             'scholarly_infrastructure/nucleus.py')}}}
