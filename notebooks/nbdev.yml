@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "ScholarlyInfrastructure"
+  site-url: "https://THU-CVML.github.io/ScholarlyInfrastructure"
+  description: ""所谓大学者，非谓有大楼之谓也，有大师之谓也。""
+  repo-branch: main
+  repo-url: "https://github.com/THU-CVML/ScholarlyInfrastructure"
