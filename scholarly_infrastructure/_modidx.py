@@ -8,11 +8,55 @@ d = { 'settings': { 'branch': 'main',
   'syms': { 'scholarly_infrastructure.fun_star': { 'scholarly_infrastructure.fun_star.foo': ( 'fun_star (f*(x) decorators for functional '
                                                                                               'hpo interface).html#foo',
                                                                                               'scholarly_infrastructure/fun_star.py')},
-            'scholarly_infrastructure.help': { 'scholarly_infrastructure.help.combine_bilingual_pretty': ( 'help (library '
+            'scholarly_infrastructure.help': { 'scholarly_infrastructure.help.LibraryPaths': ( 'help (library '
+                                                                                               'information).html#librarypaths',
+                                                                                               'scholarly_infrastructure/help.py'),
+                                               'scholarly_infrastructure.help.combine_bilingual_pretty': ( 'help (library '
                                                                                                            'information).html#combine_bilingual_pretty',
-                                                                                                           'scholarly_infrastructure/help.py')},
-            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (core functionalities of this '
-                                                                                            'lib).html#foo',
+                                                                                                           'scholarly_infrastructure/help.py'),
+                                               'scholarly_infrastructure.help.create_variables_from_dict': ( 'help (library '
+                                                                                                             'information).html#create_variables_from_dict',
+                                                                                                             'scholarly_infrastructure/help.py'),
+                                               'scholarly_infrastructure.help.setup_paths': ( 'help (library information).html#setup_paths',
+                                                                                              'scholarly_infrastructure/help.py')},
+            'scholarly_infrastructure.logging': { 'scholarly_infrastructure.logging.print': ( 'logging (richuru).html#print',
+                                                                                              'scholarly_infrastructure/logging.py')},
+            'scholarly_infrastructure.logging.infra': { 'scholarly_infrastructure.logging.infra.print': ( 'logging (richuru).html#print',
+                                                                                                          'scholarly_infrastructure/logging/infra.py')},
+            'scholarly_infrastructure.logging.nucleus': { 'scholarly_infrastructure.logging.nucleus.print': ( 'logging '
+                                                                                                              '(richuru).html#print',
+                                                                                                              'scholarly_infrastructure/logging/nucleus.py')},
+            'scholarly_infrastructure.logging.torch': { 'scholarly_infrastructure.logging.torch.nn.Module.inspect_model_parameters': ( 'torch '
+                                                                                                                                       '(inspect '
+                                                                                                                                       'torch '
+                                                                                                                                       'model).html#nn.module.inspect_model_parameters',
+                                                                                                                                       'scholarly_infrastructure/logging/torch.py'),
+                                                        'scholarly_infrastructure.logging.torch.nn.Module.model_rich_tree': ( 'torch '
+                                                                                                                              '(inspect '
+                                                                                                                              'torch '
+                                                                                                                              'model).html#nn.module.model_rich_tree',
+                                                                                                                              'scholarly_infrastructure/logging/torch.py'),
+                                                        'scholarly_infrastructure.logging.torch.nn.Module.num_of_total_parameters': ( 'torch '
+                                                                                                                                      '(inspect '
+                                                                                                                                      'torch '
+                                                                                                                                      'model).html#nn.module.num_of_total_parameters',
+                                                                                                                                      'scholarly_infrastructure/logging/torch.py'),
+                                                        'scholarly_infrastructure.logging.torch.nn.Module.num_of_trainable_parameters': ( 'torch '
+                                                                                                                                          '(inspect '
+                                                                                                                                          'torch '
+                                                                                                                                          'model).html#nn.module.num_of_trainable_parameters',
+                                                                                                                                          'scholarly_infrastructure/logging/torch.py'),
+                                                        'scholarly_infrastructure.logging.torch.nn.Module.print_model_pretty': ( 'torch '
+                                                                                                                                 '(inspect '
+                                                                                                                                 'torch '
+                                                                                                                                 'model).html#nn.module.print_model_pretty',
+                                                                                                                                 'scholarly_infrastructure/logging/torch.py'),
+                                                        'scholarly_infrastructure.logging.torch.nn.Module.print_trainable_parameters': ( 'torch '
+                                                                                                                                         '(inspect '
+                                                                                                                                         'torch '
+                                                                                                                                         'model).html#nn.module.print_trainable_parameters',
+                                                                                                                                         'scholarly_infrastructure/logging/torch.py')},
+            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (other infras).html#foo',
                                                                                             'scholarly_infrastructure/nucleus.py')},
             'scholarly_infrastructure.rv_args': { 'scholarly_infrastructure.rv_args.ExperimentModule': ( 'rv_args (arguments are random '
                                                                                                          'variables).html#experimentmodule',
@@ -92,4 +136,121 @@ d = { 'settings': { 'branch': 'main',
                                                                                                            'scholarly_infrastructure/rv_args.py'),
                                                   'scholarly_infrastructure.rv_args.show_dataframe_doc': ( 'rv_args (arguments are random '
                                                                                                            'variables).html#show_dataframe_doc',
-                                                                                                           'scholarly_infrastructure/rv_args.py')}}}
+                                                                                                           'scholarly_infrastructure/rv_args.py')},
+            'scholarly_infrastructure.rv_args.fun_star': { 'scholarly_infrastructure.rv_args.fun_star.foo': ( 'fun_star (f*(x) decorators '
+                                                                                                              'for functional hpo '
+                                                                                                              'interface).html#foo',
+                                                                                                              'scholarly_infrastructure/rv_args/fun_star.py')},
+            'scholarly_infrastructure.rv_args.nucleus': { 'scholarly_infrastructure.rv_args.nucleus.ExperimentModule': ( 'rv_args '
+                                                                                                                         '(arguments are '
+                                                                                                                         'random '
+                                                                                                                         'variables).html#experimentmodule',
+                                                                                                                         'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.ExperimentModule.__init_subclass__': ( 'rv_args '
+                                                                                                                                           '(arguments '
+                                                                                                                                           'are '
+                                                                                                                                           'random '
+                                                                                                                                           'variables).html#experimentmodule.__init_subclass__',
+                                                                                                                                           'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.ExperimentModule.__post_init__': ( 'rv_args '
+                                                                                                                                       '(arguments '
+                                                                                                                                       'are '
+                                                                                                                                       'random '
+                                                                                                                                       'variables).html#experimentmodule.__post_init__',
+                                                                                                                                       'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.ExperimentModule.__pre_init__': ( 'rv_args '
+                                                                                                                                      '(arguments '
+                                                                                                                                      'are '
+                                                                                                                                      'random '
+                                                                                                                                      'variables).html#experimentmodule.__pre_init__',
+                                                                                                                                      'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.ExperimentModule.__repr__': ( 'rv_args '
+                                                                                                                                  '(arguments '
+                                                                                                                                  'are '
+                                                                                                                                  'random '
+                                                                                                                                  'variables).html#experimentmodule.__repr__',
+                                                                                                                                  'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.ExperimentModule.extra_repr': ( 'rv_args '
+                                                                                                                                    '(arguments '
+                                                                                                                                    'are '
+                                                                                                                                    'random '
+                                                                                                                                    'variables).html#experimentmodule.extra_repr',
+                                                                                                                                    'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.ExperimentModule.setup': ( 'rv_args '
+                                                                                                                               '(arguments '
+                                                                                                                               'are random '
+                                                                                                                               'variables).html#experimentmodule.setup',
+                                                                                                                               'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.PythonField': ( 'rv_args (arguments '
+                                                                                                                    'are random '
+                                                                                                                    'variables).html#pythonfield',
+                                                                                                                    'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.PythonField.__call__': ( 'rv_args '
+                                                                                                                             '(arguments '
+                                                                                                                             'are random '
+                                                                                                                             'variables).html#pythonfield.__call__',
+                                                                                                                             'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.PythonField.__invert__': ( 'rv_args '
+                                                                                                                               '(arguments '
+                                                                                                                               'are random '
+                                                                                                                               'variables).html#pythonfield.__invert__',
+                                                                                                                               'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.PythonField.__post_init__': ( 'rv_args '
+                                                                                                                                  '(arguments '
+                                                                                                                                  'are '
+                                                                                                                                  'random '
+                                                                                                                                  'variables).html#pythonfield.__post_init__',
+                                                                                                                                  'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.RandomVariable': ( 'rv_args (arguments '
+                                                                                                                       'are random '
+                                                                                                                       'variables).html#randomvariable',
+                                                                                                                       'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.RandomVariable.__call__': ( 'rv_args '
+                                                                                                                                '(arguments '
+                                                                                                                                'are '
+                                                                                                                                'random '
+                                                                                                                                'variables).html#randomvariable.__call__',
+                                                                                                                                'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.RandomVariable.__invert__': ( 'rv_args '
+                                                                                                                                  '(arguments '
+                                                                                                                                  'are '
+                                                                                                                                  'random '
+                                                                                                                                  'variables).html#randomvariable.__invert__',
+                                                                                                                                  'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.dataclass_for_torch_decorator': ( 'rv_args '
+                                                                                                                                      '(arguments '
+                                                                                                                                      'are '
+                                                                                                                                      'random '
+                                                                                                                                      'variables).html#dataclass_for_torch_decorator',
+                                                                                                                                      'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.experiment_setting_decorator': ( 'rv_args '
+                                                                                                                                     '(arguments '
+                                                                                                                                     'are '
+                                                                                                                                     'random '
+                                                                                                                                     'variables).html#experiment_setting_decorator',
+                                                                                                                                     'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.get_optuna_search_space': ( 'rv_args '
+                                                                                                                                '(arguments '
+                                                                                                                                'are '
+                                                                                                                                'random '
+                                                                                                                                'variables).html#get_optuna_search_space',
+                                                                                                                                'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.is_experiment_setting': ( 'rv_args '
+                                                                                                                              '(arguments '
+                                                                                                                              'are random '
+                                                                                                                              'variables).html#is_experiment_setting',
+                                                                                                                              'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.optuna_suggest': ( 'rv_args (arguments '
+                                                                                                                       'are random '
+                                                                                                                       'variables).html#optuna_suggest',
+                                                                                                                       'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.pre_init_decorator': ( 'rv_args '
+                                                                                                                           '(arguments are '
+                                                                                                                           'random '
+                                                                                                                           'variables).html#pre_init_decorator',
+                                                                                                                           'scholarly_infrastructure/rv_args/nucleus.py'),
+                                                          'scholarly_infrastructure.rv_args.nucleus.show_dataframe_doc': ( 'rv_args '
+                                                                                                                           '(arguments are '
+                                                                                                                           'random '
+                                                                                                                           'variables).html#show_dataframe_doc',
+                                                                                                                           'scholarly_infrastructure/rv_args/nucleus.py')}}}
