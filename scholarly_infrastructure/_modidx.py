@@ -56,8 +56,33 @@ d = { 'settings': { 'branch': 'main',
                                                                                                                                          'torch '
                                                                                                                                          'model).html#nn.module.print_trainable_parameters',
                                                                                                                                          'scholarly_infrastructure/logging/torch.py')},
-            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (other infras).html#foo',
-                                                                                            'scholarly_infrastructure/nucleus.py')},
+            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.MuteWarnings': ( 'nucleus (other '
+                                                                                                     'infras).html#mutewarnings',
+                                                                                                     'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.MuteWarnings.__enter__': ( 'nucleus (other '
+                                                                                                               'infras).html#mutewarnings.__enter__',
+                                                                                                               'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.MuteWarnings.__exit__': ( 'nucleus (other '
+                                                                                                              'infras).html#mutewarnings.__exit__',
+                                                                                                              'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.MuteWarnings.mute': ( 'nucleus (other '
+                                                                                                          'infras).html#mutewarnings.mute',
+                                                                                                          'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.MuteWarnings.resume': ( 'nucleus (other '
+                                                                                                            'infras).html#mutewarnings.resume',
+                                                                                                            'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.append_dict_list': ( 'nucleus (other '
+                                                                                                         'infras).html#append_dict_list',
+                                                                                                         'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.default_on_exception': ( 'nucleus (other '
+                                                                                                             'infras).html#default_on_exception',
+                                                                                                             'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.ensure_array': ( 'nucleus (other '
+                                                                                                     'infras).html#ensure_array',
+                                                                                                     'scholarly_infrastructure/nucleus.py'),
+                                                  'scholarly_infrastructure.nucleus.partial_with_self': ( 'nucleus (other '
+                                                                                                          'infras).html#partial_with_self',
+                                                                                                          'scholarly_infrastructure/nucleus.py')},
             'scholarly_infrastructure.rv_args': { 'scholarly_infrastructure.rv_args.ExperimentModule': ( 'rv_args (arguments are random '
                                                                                                          'variables).html#experimentmodule',
                                                                                                          'scholarly_infrastructure/rv_args.py'),
