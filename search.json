@@ -1,0 +1,92 @@
+[
+  {
+    "objectID": "help (library information).html",
+    "href": "help (library information).html",
+    "title": "Library Information",
+    "section": "",
+    "text": "source\n\ncombine_bilingual_pretty\n\n combine_bilingual_pretty (primary:str, auxiliary:str)",
+    "crumbs": [
+      "Library Information"
+    ]
+  },
+  {
+    "objectID": "nucleus (core functionalities of this lib) .html",
+    "href": "nucleus (core functionalities of this lib) .html",
+    "title": "nucleus",
+    "section": "",
+    "text": "source\n\nfoo\n\n foo ()",
+    "crumbs": [
+      "nucleus"
+    ]
+  },
+  {
+    "objectID": "readme.html",
+    "href": "readme.html",
+    "title": "大师荟萃之楼",
+    "section": "",
+    "text": "“所谓大学者，非谓有大楼之谓也，有大师之谓也。” ——梅贻琦\nInspired by the timeless wisdom of Mei Yiqi, Scholarly Infrastructure is a foundational library designed to support and accelerate research projects within our laboratory.",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  },
+  {
+    "objectID": "readme.html#introduction",
+    "href": "readme.html#introduction",
+    "title": "大师荟萃之楼",
+    "section": "🌟 Introduction",
+    "text": "🌟 Introduction\nScholarly Infrastructure aims to provide a robust and modular foundation for all projects in our research group. It centralizes common utilities, tools, and workflows, enabling seamless collaboration and reducing redundant development effort. By building on this infrastructure, researchers can focus more on innovation and experimentation rather than re-implementing fundamental components.",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  },
+  {
+    "objectID": "readme.html#key-features",
+    "href": "readme.html#key-features",
+    "title": "大师荟萃之楼",
+    "section": "🔑 Key Features",
+    "text": "🔑 Key Features\n\n📚 Common Utilities: Ready-to-use tools for data processing, visualization, and analysis.\n\n⚙️ Modular Design: Highly reusable modules that can be integrated across diverse projects.\n\n🚀 Performance Optimization: Optimized algorithms and workflows for research tasks.\n\n🔒 Scalable and Reliable: Built to handle the increasing complexity of modern research.\n\n🛠️ Customizable: Easy to extend and tailor to specific project needs.",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  },
+  {
+    "objectID": "readme.html#installation",
+    "href": "readme.html#installation",
+    "title": "大师荟萃之楼",
+    "section": "📦 Installation",
+    "text": "📦 Installation\nInstall latest from the GitHub repository:\n$ pip install git+https://github.com/THU-CVML/ScholarlyInfrastructure.git\nor from conda\n$ conda install -c yecanming6666 scholarly_infrastructure\nor from pypi\n$ pip install scholarly_infrastructure",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  },
+  {
+    "objectID": "readme.html#usage",
+    "href": "readme.html#usage",
+    "title": "大师荟萃之楼",
+    "section": "📖 Usage",
+    "text": "📖 Usage\n\nDocumentation\nDocumentation currently not available.\n\n\n\n\n\nQuick Start\nHere’s a quick example to get started:\n\n1+1\n\n2",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  },
+  {
+    "objectID": "readme.html#contributing",
+    "href": "readme.html#contributing",
+    "title": "大师荟萃之楼",
+    "section": "🤝 Contributing",
+    "text": "🤝 Contributing\nContributions are welcome! Here’s how you can quickly get involved. Please review our contribution guidelines for more details.\n\ngit guide\n\nFork the repository and then git clone it to your local machine: git clone https://github.com/your-username/ScholarlyInfrastructure.git.\n\nCreate a new branch for your feature or bug fix: git checkout -b feature-name.\n\nCommit your changes: git commit -m \"Add feature-name\".\n\nPush your branch: git push origin feature-name.\n\nOpen a pull request and describe your changes.\n\n\n\n\nnbdev framework guide\nOur project utilizes nbdev to manage our codes, tests and documentation. If you are new to using nbdev here are some quich points to get you started.\n\n1. Install this libary in Development mode\nAfter you have cloned the repository, and before you start working on it, you need to pip install this library in development mode. This can be done using the following command:\n# make sure NamableClassify package is installed in development mode\n$ pip install -e .[dev]\n\n\n2. make changes under notebooks/ directory\nuse #| export for exported codes.\n\n\n3. check and synchronize before git commit\n# compile to have changes apply to the python module\n$ nbdev_prepare",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  },
+  {
+    "objectID": "readme.html#license",
+    "href": "readme.html#license",
+    "title": "大师荟萃之楼",
+    "section": "📜 License",
+    "text": "📜 License\nThis project is licensed under the Apache 2.0 License. You are free to use, modify, and distribute this software under the terms, provided you comply with the license’s conditions, including giving credit to the original authors and not using their trademarks.\n\n\nLet Scholarly Infrastructure be the foundation that powers your next groundbreaking discovery. Together, we build not just tools, but a thriving research ecosystem. ✨",
+    "crumbs": [
+      "大师荟萃之楼"
+    ]
+  }
+]
