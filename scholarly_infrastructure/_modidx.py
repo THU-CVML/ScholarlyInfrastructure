@@ -5,9 +5,91 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://THU-CVML.github.io',
                 'git_url': 'https://github.com/THU-CVML/ScholarlyInfrastructure',
                 'lib_path': 'scholarly_infrastructure'},
-  'syms': { 'scholarly_infrastructure.help': { 'scholarly_infrastructure.help.combine_bilingual_pretty': ( 'help (library '
+  'syms': { 'scholarly_infrastructure.fun_star': { 'scholarly_infrastructure.fun_star.foo': ( 'fun_star (f*(x) decorators for functional '
+                                                                                              'hpo interface).html#foo',
+                                                                                              'scholarly_infrastructure/fun_star.py')},
+            'scholarly_infrastructure.help': { 'scholarly_infrastructure.help.combine_bilingual_pretty': ( 'help (library '
                                                                                                            'information).html#combine_bilingual_pretty',
                                                                                                            'scholarly_infrastructure/help.py')},
-            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (core functionalities of this lib) '
-                                                                                            '.html#foo',
-                                                                                            'scholarly_infrastructure/nucleus.py')}}}
+            'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.foo': ( 'nucleus (core functionalities of this '
+                                                                                            'lib).html#foo',
+                                                                                            'scholarly_infrastructure/nucleus.py')},
+            'scholarly_infrastructure.rv_args': { 'scholarly_infrastructure.rv_args.ExperimentModule': ( 'rv_args (arguments are random '
+                                                                                                         'variables).html#experimentmodule',
+                                                                                                         'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.ExperimentModule.__init_subclass__': ( 'rv_args '
+                                                                                                                           '(arguments are '
+                                                                                                                           'random '
+                                                                                                                           'variables).html#experimentmodule.__init_subclass__',
+                                                                                                                           'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.ExperimentModule.__post_init__': ( 'rv_args (arguments '
+                                                                                                                       'are random '
+                                                                                                                       'variables).html#experimentmodule.__post_init__',
+                                                                                                                       'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.ExperimentModule.__pre_init__': ( 'rv_args (arguments '
+                                                                                                                      'are random '
+                                                                                                                      'variables).html#experimentmodule.__pre_init__',
+                                                                                                                      'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.ExperimentModule.__repr__': ( 'rv_args (arguments are '
+                                                                                                                  'random '
+                                                                                                                  'variables).html#experimentmodule.__repr__',
+                                                                                                                  'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.ExperimentModule.extra_repr': ( 'rv_args (arguments '
+                                                                                                                    'are random '
+                                                                                                                    'variables).html#experimentmodule.extra_repr',
+                                                                                                                    'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.ExperimentModule.setup': ( 'rv_args (arguments are '
+                                                                                                               'random '
+                                                                                                               'variables).html#experimentmodule.setup',
+                                                                                                               'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.PythonField': ( 'rv_args (arguments are random '
+                                                                                                    'variables).html#pythonfield',
+                                                                                                    'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.PythonField.__call__': ( 'rv_args (arguments are '
+                                                                                                             'random '
+                                                                                                             'variables).html#pythonfield.__call__',
+                                                                                                             'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.PythonField.__invert__': ( 'rv_args (arguments are '
+                                                                                                               'random '
+                                                                                                               'variables).html#pythonfield.__invert__',
+                                                                                                               'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.PythonField.__post_init__': ( 'rv_args (arguments are '
+                                                                                                                  'random '
+                                                                                                                  'variables).html#pythonfield.__post_init__',
+                                                                                                                  'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.RandomVariable': ( 'rv_args (arguments are random '
+                                                                                                       'variables).html#randomvariable',
+                                                                                                       'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.RandomVariable.__call__': ( 'rv_args (arguments are '
+                                                                                                                'random '
+                                                                                                                'variables).html#randomvariable.__call__',
+                                                                                                                'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.RandomVariable.__invert__': ( 'rv_args (arguments are '
+                                                                                                                  'random '
+                                                                                                                  'variables).html#randomvariable.__invert__',
+                                                                                                                  'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.dataclass_for_torch_decorator': ( 'rv_args (arguments '
+                                                                                                                      'are random '
+                                                                                                                      'variables).html#dataclass_for_torch_decorator',
+                                                                                                                      'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.experiment_setting_decorator': ( 'rv_args (arguments '
+                                                                                                                     'are random '
+                                                                                                                     'variables).html#experiment_setting_decorator',
+                                                                                                                     'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.get_optuna_search_space': ( 'rv_args (arguments are '
+                                                                                                                'random '
+                                                                                                                'variables).html#get_optuna_search_space',
+                                                                                                                'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.is_experiment_setting': ( 'rv_args (arguments are '
+                                                                                                              'random '
+                                                                                                              'variables).html#is_experiment_setting',
+                                                                                                              'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.optuna_suggest': ( 'rv_args (arguments are random '
+                                                                                                       'variables).html#optuna_suggest',
+                                                                                                       'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.pre_init_decorator': ( 'rv_args (arguments are random '
+                                                                                                           'variables).html#pre_init_decorator',
+                                                                                                           'scholarly_infrastructure/rv_args.py'),
+                                                  'scholarly_infrastructure.rv_args.show_dataframe_doc': ( 'rv_args (arguments are random '
+                                                                                                           'variables).html#show_dataframe_doc',
+                                                                                                           'scholarly_infrastructure/rv_args.py')}}}
