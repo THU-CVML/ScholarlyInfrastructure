@@ -56,6 +56,21 @@ d = { 'settings': { 'branch': 'main',
                                                                                                                                          'torch '
                                                                                                                                          'model).html#nn.module.print_trainable_parameters',
                                                                                                                                          'scholarly_infrastructure/logging/torch.py')},
+            'scholarly_infrastructure.nbscholar': { 'scholarly_infrastructure.nbscholar.guess_notebooks_path': ( 'nbscholar (nbdev '
+                                                                                                                 'extensions).html#guess_notebooks_path',
+                                                                                                                 'scholarly_infrastructure/nbscholar.py'),
+                                                    'scholarly_infrastructure.nbscholar.nbscholar_separate': ( 'nbscholar (nbdev '
+                                                                                                               'extensions).html#nbscholar_separate',
+                                                                                                               'scholarly_infrastructure/nbscholar.py'),
+                                                    'scholarly_infrastructure.nbscholar.operate_on_notebook_in': ( 'nbscholar (nbdev '
+                                                                                                                   'extensions).html#operate_on_notebook_in',
+                                                                                                                   'scholarly_infrastructure/nbscholar.py'),
+                                                    'scholarly_infrastructure.nbscholar.process_notebooks_in_folder': ( 'nbscholar (nbdev '
+                                                                                                                        'extensions).html#process_notebooks_in_folder',
+                                                                                                                        'scholarly_infrastructure/nbscholar.py'),
+                                                    'scholarly_infrastructure.nbscholar.split_import_and_code_cells': ( 'nbscholar (nbdev '
+                                                                                                                        'extensions).html#split_import_and_code_cells',
+                                                                                                                        'scholarly_infrastructure/nbscholar.py')},
             'scholarly_infrastructure.nucleus': { 'scholarly_infrastructure.nucleus.MuteWarnings': ( 'nucleus (other '
                                                                                                      'infras).html#mutewarnings',
                                                                                                      'scholarly_infrastructure/nucleus.py'),
