@@ -51,6 +51,7 @@ class PythonField:
                      metadata=metadata, 
                      kw_only=self.kw_only)
     def __invert__(self):
+        # 也就是 ~
         return self()
 
 @dataclass
@@ -101,15 +102,19 @@ def get_optuna_search_space(cls, frozen_rvs:set = None):
     return search_space
 
 from copy import deepcopy
-def optuna_suggest(cls:Type, trial:Trial, fixed_meta_params, suggest_params_only_in: set = None):
+def optuna_suggest(cls:Type, trial:Trial, fixed_meta_params, suggest_params_only_in: set = None, frozen_rvs:set = None):
     suggested_params = deepcopy(fixed_meta_params)
-    if suggest_only_in is None:
-        suggest_only_in = set(field.name for field in fields(cls))
+    if suggest_params_only_in is None:
+        suggest_params_only_in = set(field.name for field in fields(cls))
+    if frozen_rvs is None:
+        frozen_rvs = set()
     # fixed_meta_params is dataclass
     if not isinstance(fixed_meta_params, cls):
         raise ValueError(f"fixed_meta_params should be an instance of the {cls.__name__} class.")
     for field in fields(cls):
-        if field.name not in suggest_only_in:
+        if field.name not in suggest_params_only_in:
+            continue
+        if field.name in frozen_rvs:
             continue
         rv = field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:

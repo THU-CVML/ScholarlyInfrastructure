@@ -49,11 +49,11 @@ def default_on_exception(func, default_value=None, verbose=False, *args, **kwarg
             logger.exception(e)
         return default_value
 
-# %% ../notebooks/00_nucleus (other infras).ipynb 6
+# %% ../notebooks/00_nucleus (other infras).ipynb 7
 def append_dict_list(dict, name, value):
     dict[name] = dict.get(name, []) + [value]
 
-# %% ../notebooks/00_nucleus (other infras).ipynb 7
+# %% ../notebooks/00_nucleus (other infras).ipynb 8
 # TODO 暂时无法使用 decorator实现这个; 目前尽量不要使用这个API
 def partial_with_self(method, *args, **kwargs):
     def wrapped(self, *additional_args, **additional_kwargs):
