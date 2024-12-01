@@ -59,6 +59,9 @@ d = { 'settings': { 'branch': 'main',
             'scholarly_infrastructure.nbscholar': { 'scholarly_infrastructure.nbscholar.guess_notebooks_path': ( 'nbscholar (nbdev '
                                                                                                                  'extensions).html#guess_notebooks_path',
                                                                                                                  'scholarly_infrastructure/nbscholar.py'),
+                                                    'scholarly_infrastructure.nbscholar.nbscholar_export': ( 'nbscholar (nbdev '
+                                                                                                             'extensions).html#nbscholar_export',
+                                                                                                             'scholarly_infrastructure/nbscholar.py'),
                                                     'scholarly_infrastructure.nbscholar.nbscholar_separate': ( 'nbscholar (nbdev '
                                                                                                                'extensions).html#nbscholar_separate',
                                                                                                                'scholarly_infrastructure/nbscholar.py'),
@@ -68,6 +71,9 @@ d = { 'settings': { 'branch': 'main',
                                                     'scholarly_infrastructure.nbscholar.process_notebooks_in_folder': ( 'nbscholar (nbdev '
                                                                                                                         'extensions).html#process_notebooks_in_folder',
                                                                                                                         'scholarly_infrastructure/nbscholar.py'),
+                                                    'scholarly_infrastructure.nbscholar.read_settings_ini': ( 'nbscholar (nbdev '
+                                                                                                              'extensions).html#read_settings_ini',
+                                                                                                              'scholarly_infrastructure/nbscholar.py'),
                                                     'scholarly_infrastructure.nbscholar.split_import_and_code_cells': ( 'nbscholar (nbdev '
                                                                                                                         'extensions).html#split_import_and_code_cells',
                                                                                                                         'scholarly_infrastructure/nbscholar.py')},
