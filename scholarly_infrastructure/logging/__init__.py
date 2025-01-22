@@ -15,6 +15,7 @@ __getattr__, __dir__, __all__ = lazy_loader.attach(
             'rich_console',
         ],
         'nucleus': [
+            'logger',
             'original_print',
             'print',
             'rich_console',
@@ -22,5 +23,5 @@ __getattr__, __dir__, __all__ = lazy_loader.attach(
     },
 )
 
-__all__ = ['infra', 'nucleus', 'original_print', 'print', 'rich_console',
-           'torch']
+__all__ = ['infra', 'logger', 'nucleus', 'original_print', 'print',
+           'rich_console', 'torch']
