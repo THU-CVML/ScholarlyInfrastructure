@@ -16,8 +16,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 from rich.table import Table
 
+
 @patch
-def inspect_model_parameters(model:nn.Module):
+def inspect_model_parameters(model: nn.Module):
     trainable_params = 0
     all_param = 0
     trainable_bytes = 0
@@ -31,42 +32,61 @@ def inspect_model_parameters(model:nn.Module):
             trainable_bytes += param_bytes
     return trainable_params, all_param, trainable_bytes, all_bytes
 
+
 @patch
-def num_of_total_parameters(model:nn.Module):
+def num_of_total_parameters(model: nn.Module):
     return (model).inspect_model_parameters()[1]
 
-@patch
-def num_of_trainable_parameters(model:nn.Module):
-    return (model).inspect_model_parameters()[0]
 
 @patch
-def print_trainable_parameters(model:nn.Module):
+def num_of_trainable_parameters(model: nn.Module):
+    return (model).inspect_model_parameters()[0]
+
+
+@patch
+def print_trainable_parameters(model: nn.Module):
     """
     Prints the number of trainable parameters in the model.
     """
-    trainable_params, all_param, trainable_bytes, all_bytes = model.inspect_model_parameters()
+    trainable_params, all_param, trainable_bytes, all_bytes = (
+        model.inspect_model_parameters()
+    )
     # print(
-    table = Table(title=f"Model {model.__class__.__name__}'s Trainable Parameters Inspection")
-    table.add_column("Number of Trainable Parameters", justify="right", style="cyan", no_wrap=True)
+    table = Table(
+        title=f"Model {model.__class__.__name__}'s Trainable Parameters Inspection"
+    )
+    table.add_column(
+        "Number of Trainable Parameters", justify="right", style="cyan", no_wrap=True
+    )
     table.add_column("Number of Total Parameters", style="magenta")
     table.add_column("Trainable Ratio (0-1)", justify="right", style="green")
-    table.add_row(f"{trainable_params:.3e} ({trainable_bytes:.3e} bytes)", f"{all_param:.3e} ({all_bytes:.3e} bytes)", f"{trainable_params / all_param:.3e}")
-    
-    logger.info(
-        f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param:.2f}", 
-        rich=table
+    table.add_row(
+        f"{trainable_params:.3e} ({trainable_bytes:.3e} bytes)",
+        f"{all_param:.3e} ({all_bytes:.3e} bytes)",
+        f"{trainable_params / all_param:.3e}",
     )
+
+    logger.info(
+        f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param:.2f}",
+        rich=table,
+    )
+
 
 # %% ../../notebooks/02a_torch (inspect torch model).ipynb 7
 from bigmodelvis import Visualization
+
+
 @patch
-def model_rich_tree(self:nn.Module):
+def model_rich_tree(self: nn.Module):
     module_tree = Visualization(self).structure_graph(printTree=False)
     return module_tree
 
+
 from rich.panel import Panel
+
+
 @patch
-def print_model_pretty(self:nn.Module):
+def print_model_pretty(self: nn.Module):
     module_tree = self.model_rich_tree()
     panel = Panel(module_tree, title=f"Model Tree for {self.__class__.__name__}")
     logger.info(str(self), rich=panel)
