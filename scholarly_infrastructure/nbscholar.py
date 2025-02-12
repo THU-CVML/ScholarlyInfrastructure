@@ -35,7 +35,8 @@ def nbscholar_export(path:str = "."):
         raise Exception("nbdev_export failed")
     # 读取 settings.ini 的 lib_name
     lib_name = read_settings_ini(path, item="lib_name")
-    res = os.system(f"mkinit {lib_name} -w --lazy_loader --recursive --relative")
+    # res = os.system(f"mkinit {lib_name} -w --lazy_loader --recursive --relative")
+    res = os.system(f"mkinit {lib_name} -w --lazy_loader_typed --recursive --relative")
     if res!= 0:
         raise Exception("mkinit failed")
     
