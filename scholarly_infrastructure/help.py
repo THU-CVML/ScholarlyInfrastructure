@@ -97,9 +97,9 @@ def create_variables_from_dict(d: dict[str, Any] | Any, global_dict=None) -> Non
     if is_dataclass(d):
         d = asdict(d)
     else:
-        assert isinstance(
-            d, dict
-        ), f"Input must be a dictionary or a dataclass, but got {type(d)}. "
+        assert isinstance(d, dict), (
+            f"Input must be a dictionary or a dataclass, but got {type(d)}. "
+        )
     if global_dict is None:
         global_dict = globals()
     global_dict |= d
