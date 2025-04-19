@@ -33,6 +33,11 @@ rv_dataclass_metadata_key = "thu_rv"
 rv_missing_value = "thu_rv_missing"
 
 
+import sys
+
+assert sys.version_info >= (3, 7), "Python version >= 3.7 is required."
+
+
 @dataclass
 class PythonField:
     default: Any = rv_missing_value  # The default value of the field
@@ -47,8 +52,7 @@ class PythonField:
     # kw_only:Union[_MISSING_TYPE, bool]=MISSING
     kw_only: Union[None, bool] = rv_missing_value
 
-    def __post_init__(self):
-        # print(self)
+    def __post_init__(self):  # print(self)
         if self.default == rv_missing_value:
             self.default = MISSING
         if self.default_factory == rv_missing_value:
@@ -64,16 +68,26 @@ class PythonField:
             # self.metadata = {**kwargs}
             metadata = {**kwargs}
 
-        return field(
-            default=self.default,
-            default_factory=self.default_factory,
-            init=self.init,
-            repr=self.repr,
-            hash=self.hash,
-            compare=self.compare,
-            metadata=metadata,
-            kw_only=self.kw_only,
-        )
+        if sys.version_info < (3, 9):
+            return field(
+                default=self.default,
+                default_factory=self.default_factory,
+                init=self.init,
+                repr=self.repr,
+                hash=self.hash,
+                compare=self.compare,
+            )
+        else:
+            return field(
+                default=self.default,
+                default_factory=self.default_factory,
+                init=self.init,
+                repr=self.repr,
+                hash=self.hash,
+                compare=self.compare,
+                metadata=metadata,
+                kw_only=self.kw_only,
+            )
 
     def __invert__(self):
         # 也就是 ~
