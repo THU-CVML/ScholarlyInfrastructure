@@ -208,6 +208,10 @@ def argparse_parser_add_arguments(
             raise ValueError(
                 f"Field {field_name} has an unsupported type: {field.type}"
             )
+
+        if field_type is bool:
+            field_type = lambda x: x.lower() == "true"
+
         rv: RandomVariable = field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:
             raise ValueError(
