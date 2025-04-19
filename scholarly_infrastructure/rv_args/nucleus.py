@@ -13,6 +13,7 @@ __all__ = [
     "show_dataframe_doc",
     "get_optuna_search_space",
     "optuna_suggest",
+    "argparse_parser_add_arguments",
     "experiment_setting_decorator",
     "pre_init_decorator",
     "dataclass_for_torch_decorator",
@@ -178,6 +179,38 @@ def optuna_suggest(
     return suggested_params
 
 
+import argparse
+
+
+def argparse_parser_add_arguments(
+    cls: Type, parser: argparse.ArgumentParser, frozen_rvs: set = None
+):
+    if frozen_rvs is None:
+        frozen_rvs = set()
+    for field in fields(cls):
+        field_name = field.name
+        if frozen_rvs is not None and field_name in frozen_rvs:
+            continue
+        rv: RandomVariable = field.metadata.get(rv_dataclass_metadata_key, None)
+        if rv is None:
+            raise ValueError(
+                "Class decorated with @experiment_setting needs to use ~RandomVariable fields. "
+            )
+        default_value = (
+            rv.default
+            if rv.default != rv_missing_value
+            else rv.default_factory()
+            if rv.default_factory != rv_missing_value
+            else None
+        )
+        parser.add_argument(
+            f"--{field_name}",
+            type=field.type,
+            help=rv.description,
+            default=default_value,
+        )
+
+
 @decorator
 def experiment_setting_decorator(dataclass_func, *args, **kwargs):
     result_cls = dataclass_func(*args, **kwargs)
@@ -188,6 +221,7 @@ def experiment_setting_decorator(dataclass_func, *args, **kwargs):
     patch_to(result_cls, cls_method=True)(show_dataframe_doc)
     patch_to(result_cls, cls_method=True)(get_optuna_search_space)
     patch_to(result_cls, cls_method=True)(optuna_suggest)
+    patch_to(result_cls, cls_method=True)(argparse_parser_add_arguments)
     return result_cls
 
 

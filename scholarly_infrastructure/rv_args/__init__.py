@@ -7,6 +7,7 @@ __all__ = [
     "ExperimentModule",
     "PythonField",
     "RandomVariable",
+    "argparse_parser_add_arguments",
     "dataclass_for_torch_decorator",
     "experiment_setting",
     "experiment_setting_decorator",

@@ -11,6 +11,7 @@ __all__ = [
     "PythonField",
     "RandomVariable",
     "append_dict_list",
+    "argparse_parser_add_arguments",
     "author_name_en_us",
     "author_name_zh_cn",
     "combine_bilingual_pretty",

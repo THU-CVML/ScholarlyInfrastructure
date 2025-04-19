@@ -344,6 +344,14 @@ d = {
                 "variables).html#randomvariable.__invert__",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
+            "scholarly_infrastructure.rv_args.nucleus.argparse_parser_add_arguments": (
+                "rv_args "
+                "(arguments "
+                "are "
+                "random "
+                "variables).html#argparse_parser_add_arguments",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
             "scholarly_infrastructure.rv_args.nucleus.dataclass_for_torch_decorator": (
                 "rv_args "
                 "(arguments "
