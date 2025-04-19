@@ -191,6 +191,23 @@ def argparse_parser_add_arguments(
         field_name = field.name
         if frozen_rvs is not None and field_name in frozen_rvs:
             continue
+        # 如果已经添加过这个 argument，就不要了
+        if field_name in parser._optionals._group_actions:
+            # print(f"Field {field_name} already exists in parser, skipping.")
+            continue
+        if isinstance(field.type, str):
+            try:
+                # Try to evaluate the string as a type
+                field_type = eval(field.type)
+            except:
+                # If evaluation fails, skip type conversion
+                field_type = None
+        elif isinstance(field.type, type):
+            field_type = field.type
+        else:
+            raise ValueError(
+                f"Field {field_name} has an unsupported type: {field.type}"
+            )
         rv: RandomVariable = field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:
             raise ValueError(
@@ -205,7 +222,7 @@ def argparse_parser_add_arguments(
         )
         parser.add_argument(
             f"--{field_name}",
-            type=field.type,
+            type=field_type,
             help=rv.description,
             default=default_value,
         )
