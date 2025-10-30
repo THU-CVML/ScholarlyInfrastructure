@@ -1,5 +1,6 @@
 from . import fun_star
 from . import help
+from . import llm_api
 from . import logging
 from . import nbscholar
 from . import nucleus
@@ -24,6 +25,18 @@ from .help import (
     pretty_name,
     setup_paths,
     upgrade_command_pip,
+)
+from .llm_api import (
+    Endpoint,
+    download_file,
+    flatten_dict,
+    get_env_bool,
+    get_pydantic_version,
+    is_local_file_path,
+    is_url,
+    local_video_to_base64_uri,
+    make_info_df,
+    separate_think_and_other,
 )
 from .logging import (
     infra,
@@ -72,6 +85,7 @@ from .rv_args import (
 )
 
 __all__ = [
+    "Endpoint",
     "ExperimentModule",
     "LibraryPaths",
     "MuteWarnings",
@@ -85,12 +99,16 @@ __all__ = [
     "create_variables_from_dict",
     "dataclass_for_torch_decorator",
     "default_on_exception",
+    "download_file",
     "ensure_array",
     "experiment_setting",
     "experiment_setting_decorator",
+    "flatten_dict",
     "foo",
     "fun_star",
+    "get_env_bool",
     "get_optuna_search_space",
+    "get_pydantic_version",
     "github_repo",
     "github_user",
     "guess_notebooks_path",
@@ -98,12 +116,17 @@ __all__ = [
     "import_name",
     "infra",
     "is_experiment_setting",
+    "is_local_file_path",
+    "is_url",
     "lib_name",
     "lib_name_en_us",
     "lib_name_zh_cn",
     "lib_paths",
+    "llm_api",
+    "local_video_to_base64_uri",
     "logger",
     "logging",
+    "make_info_df",
     "nbscholar",
     "nbscholar_export",
     "nbscholar_separate",
@@ -122,6 +145,7 @@ __all__ = [
     "rv_args",
     "rv_dataclass_metadata_key",
     "rv_missing_value",
+    "separate_think_and_other",
     "setup_paths",
     "show_dataframe_doc",
     "split_import_and_code_cells",

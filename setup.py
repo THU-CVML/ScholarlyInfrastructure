@@ -1,6 +1,7 @@
 from pkg_resources import parse_version
 from configparser import ConfigParser
 import setuptools, shlex
+import os, glob
 assert parse_version(setuptools.__version__)>=parse_version('36.2')
 
 # note: all settings are in settings.ini; edit there, not here
@@ -58,6 +59,15 @@ setuptools.setup(
     entry_points = {
         'console_scripts': cfg.get('console_scripts','').split(),
         'nbdev': [f'{cfg.get("lib_path")}={cfg.get("lib_path")}._modidx:d']
+    },
+    # 增加导入别名
+    py_modules = [os.path.splitext(os.path.basename(f))[0]
+                for f in glob.glob('nicknames/*.py')],
+    package_dir = {
+        cfg.get('lib_name'): cfg.get('lib_path'), 
+        '': 'nicknames'  
+        # 这个映射有点反直觉，但它告诉 setuptools 
+        # 顶层（''）的模块（py_modules）去 'nicknames' 目录里找
     },
     **setup_cfg)
 

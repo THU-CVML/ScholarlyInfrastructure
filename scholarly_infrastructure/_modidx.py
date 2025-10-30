@@ -33,6 +33,60 @@ d = {
                 "scholarly_infrastructure/help.py",
             ),
         },
+        "scholarly_infrastructure.llm_api": {
+            "scholarly_infrastructure.llm_api.Endpoint": (
+                "llm_api.html#endpoint",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.Endpoint.__init__": (
+                "llm_api.html#endpoint.__init__",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.Endpoint.chat_completions_create": (
+                "llm_api.html#endpoint.chat_completions_create",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.Endpoint.chat_completions_create_sync": (
+                "llm_api.html#endpoint.chat_completions_create_sync",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.download_file": (
+                "llm_api.html#download_file",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.flatten_dict": (
+                "llm_api.html#flatten_dict",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.get_env_bool": (
+                "llm_api.html#get_env_bool",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.get_pydantic_version": (
+                "llm_api.html#get_pydantic_version",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.is_local_file_path": (
+                "llm_api.html#is_local_file_path",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.is_url": (
+                "llm_api.html#is_url",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.local_video_to_base64_uri": (
+                "llm_api.html#local_video_to_base64_uri",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.make_info_df": (
+                "llm_api.html#make_info_df",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.separate_think_and_other": (
+                "llm_api.html#separate_think_and_other",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+        },
         "scholarly_infrastructure.logging": {
             "scholarly_infrastructure.logging.print": (
                 "logging (richuru).html#print",
