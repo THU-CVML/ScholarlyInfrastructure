@@ -4,7 +4,11 @@
 
 # %% auto 0
 __all__ = [
+    "functions",
     "read_settings_ini_none",
+    "functions_dict",
+    "nbscholar_submodules",
+    "nbscholar_submodules_to_ssh",
     "read_settings_ini",
     "nbscholar_export",
     "guess_notebooks_path",
@@ -12,32 +16,110 @@ __all__ = [
     "operate_on_notebook_in",
     "process_notebooks_in_folder",
     "nbscholar_separate",
+    "nbscholar",
 ]
 
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 4
 from fastcore.script import call_parse
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 9
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 5
+functions = []
+
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 7
+@call_parse
+def nbscholar_submodules(mode: str = "to_ssh", *args, **kwargs):
+    if mode == "to_ssh":
+        nbscholar_submodules_to_ssh(*args, **kwargs)
+    else:
+        raise ValueError(f"Unknown mode: {mode}")
+
+
+functions.append(nbscholar_submodules)
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 8
+import re
+import subprocess
+from pathlib import Path
+from .logging.nucleus import logger
+from fastcore.script import call_parse
+
+
+@call_parse
+def nbscholar_submodules_to_ssh(path: str = "."):
+    """
+    Convert all HTTPS submodule URLs in `.gitmodules` to SSH URLs (e.g. https://github.com/user/repo.git → git@github.com:user/repo.git)
+    """
+
+    gitmodules = Path(path) / ".gitmodules"
+    if not gitmodules.exists():
+        logger.error(
+            "❌ 未找到 .gitmodules 文件，请在含有子模块的项目根目录运行此函数。"
+        )
+        raise FileNotFoundError(".gitmodules not found")
+
+    content = gitmodules.read_text(encoding="utf-8")
+
+    # 匹配 https://github.com/user/repo(.git)
+    pattern = re.compile(r"https://([^/]+)/([^/]+)/([^/\n]+)(\.git)?")
+
+    changed = False
+
+    def https_to_ssh(match):
+        nonlocal changed
+        host, user, repo, dotgit = match.groups()
+        ssh_url = f"git@{host}:{user}/{repo}.git"
+        logger.info(f"🔁 转换: https://{host}/{user}/{repo} → {ssh_url}")
+        changed = True
+        return ssh_url
+
+    new_content = pattern.sub(https_to_ssh, content)
+
+    if changed:
+        gitmodules.write_text(new_content, encoding="utf-8")
+        logger.success("✅ 已更新 .gitmodules 文件中的 URL。")
+
+        # 同步子模块配置
+        res = subprocess.run(["git", "submodule", "sync", "--recursive"])
+        if res.returncode == 0:
+            logger.success("✅ 已执行 `git submodule sync --recursive`。")
+        else:
+            logger.warning("⚠️ `git submodule sync` 执行失败，请手动检查。")
+    else:
+        logger.info("ℹ️ 没有发现 HTTPS 格式的子模块 URL，无需修改。")
+
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 13
 import configparser
 import os
 from pathlib import Path
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 10
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 14
 def read_settings_ini(
     directory, item="nbs_path", track="DEFAULT", ini_name="settings.ini"
 ):
     config = configparser.ConfigParser()
-    settings_path = os.path.join(directory, ini_name)
-    assert os.path.exists(directory), f"Directory {directory} does not exist"
-    assert os.path.exists(settings_path), f"Could not find {ini_name} in {directory}"
+    # 逐级向上查找，直到找到第一个包含 settings.ini 的目录
+    current = directory
+    while True:
+        settings_path = os.path.join(current, ini_name)
+        if os.path.exists(settings_path):
+            break
+        parent = os.path.dirname(current)
+        if parent == current:  # 已到达根目录
+            raise FileNotFoundError(
+                f"Could not find {ini_name} in any parent of {directory}"
+            )
+        current = parent
+
     config.read(settings_path)
     assert track in config, f"Could not find {track} in {settings_path}"
     assert item in config[track], f"Could not find {item} in {settings_path}"
     return config[track][item]
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 11
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 15
 import subprocess
 import os
 from .logging.nucleus import logger
@@ -48,30 +130,33 @@ def nbscholar_export(path: str = "."):
     res = os.system("nbdev_export")
     if res != 0:
         raise Exception("nbdev_export failed")
-    # 读取 settings.ini 的 lib_name
-    lib_name = read_settings_ini(path, item="lib_name")
+    # 读取 settings.ini 的 lib_path
+    lib_path = read_settings_ini(path, item="lib_path")
 
     # MKINIT 生成 __init__.py
     # res = os.system(f"mkinit {lib_name} -w --lazy_loader --recursive --relative")
-    res = os.system(f"mkinit {lib_name} -w --lazy_loader_typed --recursive --relative")
+    res = os.system(f"mkinit {lib_path} -w --lazy_loader_typed --recursive --relative")
     if res != 0:
         # raise Exception("mkinit failed")
         logger.warning("mkinit failed")
 
     # RUFF 格式化
-    res = os.system(f"ruff format {lib_name}")
+    res = os.system(f"ruff format {lib_path}")
     if res != 0:
         logger.warning("ruff format failed")
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 15
+functions.append(nbscholar_export)
+
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 19
 import os
 import nbformat
 import re
 from nbformat.notebooknode import NotebookNode, from_dict
 from . import default_on_exception
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 16
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 20
 read_settings_ini_none = default_on_exception(read_settings_ini, default_value=None)
 
 
@@ -82,11 +167,11 @@ def guess_notebooks_path(directory="."):
     return read_settings_ini_none(directory)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 19
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 23
 from copy import deepcopy
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 20
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 24
 def split_import_and_code_cells(notebook, inplace=True):
     """
     Process a Jupyter Notebook file, splitting cells with both import and non-import lines into two cells.
@@ -150,7 +235,7 @@ def split_import_and_code_cells(notebook, inplace=True):
     return notebook
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 22
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 26
 def operate_on_notebook_in(
     input_path, output_path=None, operation=split_import_and_code_cells
 ):
@@ -164,7 +249,7 @@ def operate_on_notebook_in(
         nbformat.write(notebook, f)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 23
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 27
 def process_notebooks_in_folder(folder_path, operation=split_import_and_code_cells):
     """
     Traverse all .ipynb files in a folder and apply the cell-splitting logic.
@@ -179,7 +264,7 @@ def process_notebooks_in_folder(folder_path, operation=split_import_and_code_cel
                 operate_on_notebook_in(notebook_path, operation=operation)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 24
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 28
 @call_parse
 def nbscholar_separate(path: str = "."):
     if os.path.isfile(path):
@@ -189,3 +274,18 @@ def nbscholar_separate(path: str = "."):
     if notebook_path is None:
         notebook_path = path
     process_notebooks_in_folder(notebook_path)
+
+
+functions.append(nbscholar_separate)
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 30
+functions_dict = {v.__name__.replace("nbscholar_", ""): v for v in functions}
+
+
+# 整体路由
+@call_parse
+def nbscholar(mode: str = "export", *args, **kwargs):
+    function = functions_dict.get(mode, None)
+    if function is None:
+        raise ValueError(f"Invalid mode: {mode}")
+    function(*args, **kwargs)

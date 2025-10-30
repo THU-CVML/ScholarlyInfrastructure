@@ -121,12 +121,24 @@ d = {
                 "nbscholar (nbdev extensions).html#guess_notebooks_path",
                 "scholarly_infrastructure/nbscholar.py",
             ),
+            "scholarly_infrastructure.nbscholar.nbscholar": (
+                "nbscholar (nbdev extensions).html#nbscholar",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
             "scholarly_infrastructure.nbscholar.nbscholar_export": (
                 "nbscholar (nbdev extensions).html#nbscholar_export",
                 "scholarly_infrastructure/nbscholar.py",
             ),
             "scholarly_infrastructure.nbscholar.nbscholar_separate": (
                 "nbscholar (nbdev extensions).html#nbscholar_separate",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
+            "scholarly_infrastructure.nbscholar.nbscholar_submodules": (
+                "nbscholar (nbdev extensions).html#nbscholar_submodules",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
+            "scholarly_infrastructure.nbscholar.nbscholar_submodules_to_ssh": (
+                "nbscholar (nbdev extensions).html#nbscholar_submodules_to_ssh",
                 "scholarly_infrastructure/nbscholar.py",
             ),
             "scholarly_infrastructure.nbscholar.operate_on_notebook_in": (
