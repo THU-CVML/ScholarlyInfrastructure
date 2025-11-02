@@ -164,7 +164,7 @@ def load_overlaying_config(
                     f"Found config at: {config_path}, priority is {i} (the higher the priority, the later it is loaded)."
                 )
             not_all_vacant = True
-            config.update(get_config(str(config_path)) or {})
+            config.update(load_config(str(config_path)) or {})
     return config if not_all_vacant else None
 
 

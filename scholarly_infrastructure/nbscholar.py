@@ -96,9 +96,13 @@ from pathlib import Path
 
 
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 14
+# from skinfra.experiment import load_overlaying_config
 def read_settings_ini(
     directory: str, item="nbs_path", track="DEFAULT", ini_name="settings.ini"
 ):
+    # return load_overlaying_config(
+    #     directory, ini_name
+    # )[track][item]
     config = configparser.ConfigParser()
     # 逐级向上查找，直到找到第一个包含 settings.ini 的目录
     current = directory
