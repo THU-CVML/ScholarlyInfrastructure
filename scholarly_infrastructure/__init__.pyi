@@ -1,3 +1,4 @@
+from . import experiment
 from . import fun_star
 from . import help
 from . import llm_api
@@ -6,6 +7,16 @@ from . import nbscholar
 from . import nucleus
 from . import rv_args
 
+from .experiment import (
+    deprecated_alias_of,
+    get_config,
+    iterate_path_hierarchy,
+    load_config,
+    load_overlaying_config,
+    nucleus,
+    read_overlaying_config,
+    save_config,
+)
 from .fun_star import (
     foo,
 )
@@ -104,8 +115,10 @@ __all__ = [
     "create_variables_from_dict",
     "dataclass_for_torch_decorator",
     "default_on_exception",
+    "deprecated_alias_of",
     "download_file",
     "ensure_array",
+    "experiment",
     "experiment_setting",
     "experiment_setting_decorator",
     "flatten_dict",
@@ -113,6 +126,7 @@ __all__ = [
     "fun_star",
     "functions",
     "functions_dict",
+    "get_config",
     "get_env_bool",
     "get_optuna_search_space",
     "get_pydantic_version",
@@ -125,11 +139,14 @@ __all__ = [
     "is_experiment_setting",
     "is_local_file_path",
     "is_url",
+    "iterate_path_hierarchy",
     "lib_name",
     "lib_name_en_us",
     "lib_name_zh_cn",
     "lib_paths",
     "llm_api",
+    "load_config",
+    "load_overlaying_config",
     "local_video_to_base64_uri",
     "logger",
     "logging",
@@ -148,12 +165,14 @@ __all__ = [
     "pretty_name",
     "print",
     "process_notebooks_in_folder",
+    "read_overlaying_config",
     "read_settings_ini",
     "read_settings_ini_none",
     "rich_console",
     "rv_args",
     "rv_dataclass_metadata_key",
     "rv_missing_value",
+    "save_config",
     "separate_think_and_other",
     "setup_paths",
     "show_dataframe_doc",

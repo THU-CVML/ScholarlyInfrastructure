@@ -97,11 +97,12 @@ from pathlib import Path
 
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 14
 def read_settings_ini(
-    directory, item="nbs_path", track="DEFAULT", ini_name="settings.ini"
+    directory: str, item="nbs_path", track="DEFAULT", ini_name="settings.ini"
 ):
     config = configparser.ConfigParser()
     # 逐级向上查找，直到找到第一个包含 settings.ini 的目录
     current = directory
+
     while True:
         settings_path = os.path.join(current, ini_name)
         if os.path.exists(settings_path):

@@ -9,6 +9,28 @@ d = {
         "lib_path": "scholarly_infrastructure",
     },
     "syms": {
+        "scholarly_infrastructure.experiment.nucleus": {
+            "scholarly_infrastructure.experiment.nucleus.deprecated_alias_of": (
+                "experiment (parameters management).html#deprecated_alias_of",
+                "scholarly_infrastructure/experiment/nucleus.py",
+            ),
+            "scholarly_infrastructure.experiment.nucleus.iterate_path_hierarchy": (
+                "experiment (parameters management).html#iterate_path_hierarchy",
+                "scholarly_infrastructure/experiment/nucleus.py",
+            ),
+            "scholarly_infrastructure.experiment.nucleus.load_config": (
+                "experiment (parameters management).html#load_config",
+                "scholarly_infrastructure/experiment/nucleus.py",
+            ),
+            "scholarly_infrastructure.experiment.nucleus.load_overlaying_config": (
+                "experiment (parameters management).html#load_overlaying_config",
+                "scholarly_infrastructure/experiment/nucleus.py",
+            ),
+            "scholarly_infrastructure.experiment.nucleus.save_config": (
+                "experiment (parameters management).html#save_config",
+                "scholarly_infrastructure/experiment/nucleus.py",
+            ),
+        },
         "scholarly_infrastructure.help": {
             "scholarly_infrastructure.help.LibraryPaths": (
                 "help (library information).html#librarypaths",
