@@ -16,6 +16,6 @@ import scholarly_infrastructure
 # )
 
 # 3. 关键的“魔术”：
-# 将当前模块 (例如 'ski') 在系统模块缓存 (sys.modules) 中的条目
-# 替换为“真实”模块 ('scholar_lib') 的条目。
+# 将当前模块 (例如 'skinfra') 在系统模块缓存 (sys.modules) 中的条目
+# 替换为“真实”模块 ('scholarly_infrastructure') 的条目。
 sys.modules[__name__] = sys.modules['scholarly_infrastructure']

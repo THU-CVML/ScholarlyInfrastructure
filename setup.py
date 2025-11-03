@@ -65,6 +65,7 @@ setuptools.setup(
                 for f in glob.glob('nicknames/*.py')],
     package_dir = {
         cfg.get('lib_name'): cfg.get('lib_path'), 
+        # cfg.get('lib_path'): cfg.get('lib_name'), 
         '': 'nicknames'  
         # 这个映射有点反直觉，但它告诉 setuptools 
         # 顶层（''）的模块（py_modules）去 'nicknames' 目录里找
