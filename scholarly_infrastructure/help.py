@@ -55,7 +55,21 @@ def setup_paths(this_library: ModuleType) -> LibraryPaths:
     """
     lib_init_path = Path(inspect.getfile(this_library))
     lib_directory_path = lib_init_path.parent
+
+    # 向上回溯，直到找到包含.git或setup.py/pyproject.toml的目录作为repo根
     lib_repo_path = lib_directory_path.parent
+    while not (
+        (lib_repo_path / ".git").exists()
+        # or
+        # (lib_repo_path / 'setup.py').exists() or
+        # (lib_repo_path / 'pyproject.toml').exists() # 子包也有 pyproject.toml
+    ):
+        parent = lib_repo_path.parent
+        if parent == lib_repo_path:  # 到达根目录
+            lib_repo_path = lib_directory_path.parent  # 没有 git，退化为上级目录。
+            # TODO 更好的根据import的name有几个.来判断
+            break
+        lib_repo_path = parent
 
     runs_path = lib_repo_path / "runs"
     runs_path.mkdir(exist_ok=True, parents=True)
