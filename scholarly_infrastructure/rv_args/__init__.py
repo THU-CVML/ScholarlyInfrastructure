@@ -4,11 +4,13 @@ import lazy_loader
 __getattr__, __dir__, __all__ = lazy_loader.attach_stub(__name__, __file__)
 
 __all__ = [
+    "DataClass",
     "DependentVariable",
     "ExperimentModule",
+    "ExperimentSetting",
     "IndependentVariable",
-    "PythonField",
     "RandomVariable",
+    "ScholarPythonField",
     "Variable",
     "argparse_parser_add_arguments",
     "dataclass_for_torch_decorator",
@@ -21,6 +23,7 @@ __all__ = [
     "nucleus",
     "optuna_suggest",
     "pre_init_decorator",
+    "pyfields",
     "rv_dataclass_metadata_key",
     "rv_missing_value",
     "show_dataframe_doc",

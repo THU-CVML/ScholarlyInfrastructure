@@ -5,14 +5,16 @@ import lazy_loader
 __getattr__, __dir__, __all__ = lazy_loader.attach_stub(__name__, __file__)
 
 __all__ = [
+    "DataClass",
     "DependentVariable",
     "Endpoint",
     "ExperimentModule",
+    "ExperimentSetting",
     "IndependentVariable",
     "LibraryPaths",
     "MuteWarnings",
-    "PythonField",
     "RandomVariable",
+    "ScholarPythonField",
     "Variable",
     "append_dict_list",
     "argparse_parser_add_arguments",
@@ -73,6 +75,7 @@ __all__ = [
     "pretty_name",
     "print",
     "process_notebooks_in_folder",
+    "pyfields",
     "read_overlaying_config",
     "read_settings_ini",
     "read_settings_ini_none",

@@ -7,7 +7,7 @@ __all__ = [
     "rv_dataclass_metadata_key",
     "rv_missing_value",
     "experiment_setting",
-    "PythonField",
+    "ScholarPythonField",
     "Variable",
     "IndependentVariable",
     "DependentVariable",
@@ -17,14 +17,17 @@ __all__ = [
     "get_optuna_search_space",
     "optuna_suggest",
     "argparse_parser_add_arguments",
+    "pyfields",
     "experiment_setting_decorator",
+    "DataClass",
+    "ExperimentSetting",
     "pre_init_decorator",
     "dataclass_for_torch_decorator",
     "ExperimentModule",
 ]
 
-# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 4
-from dataclasses import dataclass, field, MISSING, _MISSING_TYPE, fields, asdict
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 5
+from dataclasses import dataclass, field, MISSING, _MISSING_TYPE, fields, asdict, Field
 from typing import List, Dict, Any, Type, Optional, Callable, Union
 from optuna.distributions import (
     BaseDistribution,
@@ -43,7 +46,7 @@ assert sys.version_info >= (3, 7), "Python version >= 3.7 is required."
 
 
 @dataclass
-class PythonField:
+class ScholarPythonField:
     default: Any = rv_missing_value  # The default value of the field
     default_factory: Callable[[], Any] = (
         rv_missing_value  # A function to generate the default value of the field
@@ -71,6 +74,8 @@ class PythonField:
         if self.metadata is None:
             # self.metadata = {**kwargs}
             metadata = {**kwargs}
+        else:
+            metadata = {**self.metadata, **kwargs}
 
         if sys.version_info < (3, 9):
             return field(
@@ -94,12 +99,46 @@ class PythonField:
             )
 
     def __invert__(self):
-        # 也就是 ~
+        # 也就是 `~` 运算符
         return self()
+
+    @classmethod
+    def from_field(cls, py_field: Field, **kwargs) -> "Self":
+        # py_field = cls(**py_field)
+        if sys.version_info < (3, 9):
+            scholar_field = cls(
+                default=py_field.default,
+                default_factory=py_field.default_factory,
+                init=py_field.init,
+                repr=py_field.repr,
+                hash=py_field.hash,
+                compare=py_field.compare,
+                **kwargs,
+            )
+        else:
+            scholar_field = cls(
+                default=py_field.default,
+                default_factory=py_field.default_factory,
+                init=py_field.init,
+                repr=py_field.repr,
+                hash=py_field.hash,
+                compare=py_field.compare,
+                metadata=py_field.metadata,
+                kw_only=py_field.kw_only,
+                **kwargs,
+            )
+            # scholar_field.metadata[rv_dataclass_metadata_key] = scholar_field
+            # if len(py_field.metadata)==0:
+            #     scholar_field.metadata = asdict(scholar_field) # 自我信息指向
+            # else:
+            #     metadata = py_field.metadata.copy()
+            #     pass # 否则就保留原本的field自带的信息
+            # **{rv_dataclass_metadata_key: self},
+        return scholar_field
 
 
 @dataclass
-class Variable(PythonField):
+class Variable(ScholarPythonField):
     description: str = "MISSING description. "  # The description of the field
     distribution: BaseDistribution = (
         "MISSING distribution. "  # The distribution of the data
@@ -113,31 +152,39 @@ class Variable(PythonField):
             **kwargs,
         )
 
-    def __invert__(self):
-        return self()
+    @classmethod
+    def from_field(cls, py_field: Field) -> "Self":
+        description = py_field.metadata.get("description", "MISSING description. ")
+        distribution = py_field.metadata.get("distribution", "MISSING distribution. ")
+        return super().from_field(
+            py_field, description=description, distribution=distribution
+        )
 
 
+@dataclass
 class IndependentVariable(Variable):
     """独立变量"""
 
 
+@dataclass
 class DependentVariable(Variable):
     """相关变量"""
 
 
+@dataclass
 class RandomVariable(Variable):
     """Variable 是 RandomVariable 的别名，已废弃，请使用 RandomVariable。"""
 
     def __init__(self, *args, **kwargs):
-        warnings.warn(
-            "RandomVariable 已废弃，请使用 Variable 代替。",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        # warnings.warn(
+        #     "RandomVariable 已废弃，请使用 Variable 代替。",
+        #     DeprecationWarning,
+        #     stacklevel=2
+        # )
         super().__init__(*args, **kwargs)
 
 
-# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 6
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 10
 from decorator import decorator
 from fastcore.basics import patch_to
 from dataclasses import asdict
@@ -146,9 +193,9 @@ from optuna import Trial
 
 
 def is_experiment_setting(cls):
-    for field in fields(cls):
+    for py_field in fields(cls):
         if not isinstance(
-            field.metadata.get(rv_dataclass_metadata_key, None), RandomVariable
+            py_field.metadata.get(rv_dataclass_metadata_key, None), Variable
         ):
             return False
     return True
@@ -156,24 +203,24 @@ def is_experiment_setting(cls):
 
 def show_dataframe_doc(cls):
     results = []
-    for field in fields(cls):
-        rv = field.metadata.get(rv_dataclass_metadata_key, None)
+    for py_field in fields(cls):
+        rv = py_field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:
             raise ValueError(
                 "Class decorated with @experiment_setting needs to use ~RandomVariable fields. "
             )
-        field_info = dict(name=field.name, type=field.type) | asdict(rv)
+        field_info = dict(name=py_field.name, type=py_field.type) | asdict(rv)
         results.append(field_info)
     return pd.DataFrame(results)
 
 
 def get_optuna_search_space(cls, frozen_rvs: set = None):
     search_space = {}
-    for field in fields(cls):
-        field_name = field.name
+    for py_field in fields(cls):
+        field_name = py_field.name
         if frozen_rvs is not None and field_name in frozen_rvs:
             continue
-        rv = field.metadata.get(rv_dataclass_metadata_key, None)
+        rv = py_field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:
             raise ValueError(
                 "Class decorated with @experiment_setting needs to use ~RandomVariable fields. "
@@ -194,7 +241,7 @@ def optuna_suggest(
 ):
     suggested_params = deepcopy(fixed_meta_params)
     if suggest_params_only_in is None:
-        suggest_params_only_in = set(field.name for field in fields(cls))
+        suggest_params_only_in = set(py_field.name for py_field in fields(cls))
     if frozen_rvs is None:
         frozen_rvs = set()
     # fixed_meta_params is dataclass
@@ -202,18 +249,18 @@ def optuna_suggest(
         raise ValueError(
             f"fixed_meta_params should be an instance of the {cls.__name__} class."
         )
-    for field in fields(cls):
-        if field.name not in suggest_params_only_in:
+    for py_field in fields(cls):
+        if py_field.name not in suggest_params_only_in:
             continue
-        if field.name in frozen_rvs:
+        if py_field.name in frozen_rvs:
             continue
-        rv = field.metadata.get(rv_dataclass_metadata_key, None)
+        rv = py_field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:
             raise ValueError(
                 "Class decorated with @experiment_setting needs to use ~RandomVariable fields. "
             )
-        suggested_value = trial._suggest(field.name, rv.distribution)
-        setattr(suggested_params, field.name, suggested_value)
+        suggested_value = trial._suggest(py_field.name, rv.distribution)
+        setattr(suggested_params, py_field.name, suggested_value)
     return suggested_params
 
 
@@ -225,32 +272,32 @@ def argparse_parser_add_arguments(
 ):
     if frozen_rvs is None:
         frozen_rvs = set()
-    for field in fields(cls):
-        field_name = field.name
+    for py_field in fields(cls):
+        field_name = py_field.name
         if frozen_rvs is not None and field_name in frozen_rvs:
             continue
         # 如果已经添加过这个 argument，就不要了
         if field_name in parser._optionals._group_actions:
             # print(f"Field {field_name} already exists in parser, skipping.")
             continue
-        if isinstance(field.type, str):
+        if isinstance(py_field.type, str):
             try:
                 # Try to evaluate the string as a type
-                field_type = eval(field.type)
+                field_type = eval(py_field.type)
             except:
                 # If evaluation fails, skip type conversion
                 field_type = None
-        elif isinstance(field.type, type):
-            field_type = field.type
+        elif isinstance(py_field.type, type):
+            field_type = py_field.type
         else:
             raise ValueError(
-                f"Field {field_name} has an unsupported type: {field.type}"
+                f"Field {field_name} has an unsupported type: {py_field.type}"
             )
 
         if field_type is bool:
             field_type = lambda x: x.lower() == "true"
 
-        rv: RandomVariable = field.metadata.get(rv_dataclass_metadata_key, None)
+        rv: Variable = py_field.metadata.get(rv_dataclass_metadata_key, None)
         if rv is None:
             raise ValueError(
                 "Class decorated with @experiment_setting needs to use ~RandomVariable fields. "
@@ -270,13 +317,55 @@ def argparse_parser_add_arguments(
         )
 
 
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 14
+def pyfields(any_cls, return_name: bool = False):
+    """迭代器：遍历类中所有类型为 Field 的类变量，返回 (name, field) 对
+    筛选 MyClass 中类型为 Field 的类变量
+    获取类的所有属性字典（仅包含类自身定义的）
+    """
+    for name, value in vars(any_cls).items():
+        # 排除特殊方法（如 __module__、__doc__ 等）
+        if not name.startswith("__") and isinstance(value, Field):
+            if return_name:
+                yield name, value
+            else:
+                yield value
+
+
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 16
+from copy import deepcopy
+
+
 @decorator
-def experiment_setting_decorator(dataclass_func, *args, **kwargs):
-    result_cls = dataclass_func(*args, **kwargs)
-    if not is_experiment_setting(result_cls):
-        raise ValueError(
-            "Class decorated with @experiment_setting needs to use ~RandomVariable fields. "
-        )
+def experiment_setting_decorator(dataclass_func, cls, **kwargs):
+    # decorator不允许*args，这也很正常，装饰器确实应该写出kwargs。
+    # 先应用一次才能检查出fields
+    # 注意deepcopy无效
+    # 如果重复来dataclass会有bug。
+    # normal_dataclass_cls = dataclass_func(deepcopy(cls), **kwargs)
+    # 1. 自动修复cls中 不是 Variable的位置
+
+    has_warned = False
+    for py_field in pyfields(cls):
+        if not isinstance(
+            py_field.metadata.get(rv_dataclass_metadata_key, None), Variable
+        ):
+            if not has_warned:
+                has_warned = True
+                warnings.warn(
+                    f"""Field {py_field.name} is not a ~Variable, 
+                    Why am I seeing this warning: Class {cls.__name__} is decorated with @experiment_setting.
+                    No worries, we will construct a ~Variable for it.
+                    """,
+                    category=UserWarning,
+                    stacklevel=4,
+                )
+            var = Variable.from_field(py_field)
+            setattr(cls, py_field.name, var.__call__())
+            # py_field.metadata = var.metadata
+    # # 再来一次应用dataclass
+    result_cls = dataclass_func(cls, **kwargs)
+
     patch_to(result_cls, cls_method=True)(show_dataframe_doc)
     patch_to(result_cls, cls_method=True)(get_optuna_search_space)
     patch_to(result_cls, cls_method=True)(optuna_suggest)
@@ -287,14 +376,27 @@ def experiment_setting_decorator(dataclass_func, *args, **kwargs):
 experiment_setting = experiment_setting_decorator(dataclass)
 
 
-# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 13
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 21
+class DataClass:
+    decorator = dataclass
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+        cls.decorator(cls)
+
+
+class ExperimentSetting(DataClass):
+    decorator = experiment_setting
+
+
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 29
 @decorator
 def pre_init_decorator(init_func, self, *args, **kwargs):
     self.__pre_init__(*args, **kwargs)
     return init_func(self, *args, **kwargs)
 
 
-# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 15
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 31
 def dataclass_for_torch_decorator(dataclass_func):
     def wrapped_func(cls):
         result_cls = dataclass_func(cls, eq=False)
@@ -306,12 +408,12 @@ def dataclass_for_torch_decorator(dataclass_func):
     return wrapped_func
 
 
-# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 16
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 32
 _experiment_module = dataclass_for_torch_decorator(
     experiment_setting
 )  # 隐藏，不建议直接使用
 
-# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 17
+# %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 33
 import torch
 import torch.nn as nn
 

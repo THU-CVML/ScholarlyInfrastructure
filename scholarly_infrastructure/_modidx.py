@@ -233,6 +233,18 @@ d = {
             )
         },
         "scholarly_infrastructure.rv_args.nucleus": {
+            "scholarly_infrastructure.rv_args.nucleus.DataClass": (
+                "rv_args (arguments are random variables).html#dataclass",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.DataClass.__init_subclass__": (
+                "rv_args "
+                "(arguments "
+                "are "
+                "random "
+                "variables).html#dataclass.__init_subclass__",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
             "scholarly_infrastructure.rv_args.nucleus.DependentVariable": (
                 "rv_args (arguments are random variables).html#dependentvariable",
                 "scholarly_infrastructure/rv_args/nucleus.py",
@@ -285,28 +297,12 @@ d = {
                 "rv_args (arguments are random variables).html#experimentmodule.setup",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
+            "scholarly_infrastructure.rv_args.nucleus.ExperimentSetting": (
+                "rv_args (arguments are random variables).html#experimentsetting",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
             "scholarly_infrastructure.rv_args.nucleus.IndependentVariable": (
                 "rv_args (arguments are random variables).html#independentvariable",
-                "scholarly_infrastructure/rv_args/nucleus.py",
-            ),
-            "scholarly_infrastructure.rv_args.nucleus.PythonField": (
-                "rv_args (arguments are random variables).html#pythonfield",
-                "scholarly_infrastructure/rv_args/nucleus.py",
-            ),
-            "scholarly_infrastructure.rv_args.nucleus.PythonField.__call__": (
-                "rv_args (arguments are random variables).html#pythonfield.__call__",
-                "scholarly_infrastructure/rv_args/nucleus.py",
-            ),
-            "scholarly_infrastructure.rv_args.nucleus.PythonField.__invert__": (
-                "rv_args (arguments are random variables).html#pythonfield.__invert__",
-                "scholarly_infrastructure/rv_args/nucleus.py",
-            ),
-            "scholarly_infrastructure.rv_args.nucleus.PythonField.__post_init__": (
-                "rv_args "
-                "(arguments "
-                "are "
-                "random "
-                "variables).html#pythonfield.__post_init__",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
             "scholarly_infrastructure.rv_args.nucleus.RandomVariable": (
@@ -317,6 +313,42 @@ d = {
                 "rv_args (arguments are random variables).html#randomvariable.__init__",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
+            "scholarly_infrastructure.rv_args.nucleus.ScholarPythonField": (
+                "rv_args (arguments are random variables).html#scholarpythonfield",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.ScholarPythonField.__call__": (
+                "rv_args "
+                "(arguments "
+                "are "
+                "random "
+                "variables).html#scholarpythonfield.__call__",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.ScholarPythonField.__invert__": (
+                "rv_args "
+                "(arguments "
+                "are "
+                "random "
+                "variables).html#scholarpythonfield.__invert__",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.ScholarPythonField.__post_init__": (
+                "rv_args "
+                "(arguments "
+                "are "
+                "random "
+                "variables).html#scholarpythonfield.__post_init__",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.ScholarPythonField.from_field": (
+                "rv_args "
+                "(arguments "
+                "are "
+                "random "
+                "variables).html#scholarpythonfield.from_field",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
             "scholarly_infrastructure.rv_args.nucleus.Variable": (
                 "rv_args (arguments are random variables).html#variable",
                 "scholarly_infrastructure/rv_args/nucleus.py",
@@ -325,8 +357,8 @@ d = {
                 "rv_args (arguments are random variables).html#variable.__call__",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
-            "scholarly_infrastructure.rv_args.nucleus.Variable.__invert__": (
-                "rv_args (arguments are random variables).html#variable.__invert__",
+            "scholarly_infrastructure.rv_args.nucleus.Variable.from_field": (
+                "rv_args (arguments are random variables).html#variable.from_field",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
             "scholarly_infrastructure.rv_args.nucleus.argparse_parser_add_arguments": (
@@ -367,6 +399,10 @@ d = {
             ),
             "scholarly_infrastructure.rv_args.nucleus.pre_init_decorator": (
                 "rv_args (arguments are random variables).html#pre_init_decorator",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.pyfields": (
+                "rv_args (arguments are random variables).html#pyfields",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
             "scholarly_infrastructure.rv_args.nucleus.show_dataframe_doc": (
