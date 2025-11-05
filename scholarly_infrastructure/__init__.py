@@ -5,12 +5,15 @@ import lazy_loader
 __getattr__, __dir__, __all__ = lazy_loader.attach_stub(__name__, __file__)
 
 __all__ = [
+    "DependentVariable",
     "Endpoint",
     "ExperimentModule",
+    "IndependentVariable",
     "LibraryPaths",
     "MuteWarnings",
     "PythonField",
     "RandomVariable",
+    "Variable",
     "append_dict_list",
     "argparse_parser_add_arguments",
     "author_name_en_us",
@@ -25,6 +28,7 @@ __all__ = [
     "experiment",
     "experiment_setting",
     "experiment_setting_decorator",
+    "extract_code_content",
     "flatten_dict",
     "foo",
     "fun_star",

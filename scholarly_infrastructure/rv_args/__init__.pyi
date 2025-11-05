@@ -5,9 +5,12 @@ from .fun_star import (
     foo,
 )
 from .nucleus import (
+    DependentVariable,
     ExperimentModule,
+    IndependentVariable,
     PythonField,
     RandomVariable,
+    Variable,
     argparse_parser_add_arguments,
     dataclass_for_torch_decorator,
     experiment_setting,
@@ -22,9 +25,12 @@ from .nucleus import (
 )
 
 __all__ = [
+    "DependentVariable",
     "ExperimentModule",
+    "IndependentVariable",
     "PythonField",
     "RandomVariable",
+    "Variable",
     "argparse_parser_add_arguments",
     "dataclass_for_torch_decorator",
     "experiment_setting",

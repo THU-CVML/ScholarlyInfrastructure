@@ -40,6 +40,7 @@ from .help import (
 from .llm_api import (
     Endpoint,
     download_file,
+    extract_code_content,
     flatten_dict,
     get_env_bool,
     get_pydantic_version,
@@ -81,9 +82,12 @@ from .nucleus import (
     partial_with_self,
 )
 from .rv_args import (
+    DependentVariable,
     ExperimentModule,
+    IndependentVariable,
     PythonField,
     RandomVariable,
+    Variable,
     argparse_parser_add_arguments,
     dataclass_for_torch_decorator,
     experiment_setting,
@@ -101,12 +105,15 @@ from .rv_args import (
 )
 
 __all__ = [
+    "DependentVariable",
     "Endpoint",
     "ExperimentModule",
+    "IndependentVariable",
     "LibraryPaths",
     "MuteWarnings",
     "PythonField",
     "RandomVariable",
+    "Variable",
     "append_dict_list",
     "argparse_parser_add_arguments",
     "author_name_en_us",
@@ -121,6 +128,7 @@ __all__ = [
     "experiment",
     "experiment_setting",
     "experiment_setting_decorator",
+    "extract_code_content",
     "flatten_dict",
     "foo",
     "fun_star",

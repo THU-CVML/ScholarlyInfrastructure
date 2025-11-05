@@ -8,6 +8,9 @@ __all__ = [
     "rv_missing_value",
     "experiment_setting",
     "PythonField",
+    "Variable",
+    "IndependentVariable",
+    "DependentVariable",
     "RandomVariable",
     "is_experiment_setting",
     "show_dataframe_doc",
@@ -34,6 +37,7 @@ rv_missing_value = "thu_rv_missing"
 
 
 import sys
+import warnings
 
 assert sys.version_info >= (3, 7), "Python version >= 3.7 is required."
 
@@ -95,7 +99,7 @@ class PythonField:
 
 
 @dataclass
-class RandomVariable(PythonField):
+class Variable(PythonField):
     description: str = "MISSING description. "  # The description of the field
     distribution: BaseDistribution = (
         "MISSING distribution. "  # The distribution of the data
@@ -111,6 +115,26 @@ class RandomVariable(PythonField):
 
     def __invert__(self):
         return self()
+
+
+class IndependentVariable(Variable):
+    """独立变量"""
+
+
+class DependentVariable(Variable):
+    """相关变量"""
+
+
+class RandomVariable(Variable):
+    """Variable 是 RandomVariable 的别名，已废弃，请使用 RandomVariable。"""
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            "RandomVariable 已废弃，请使用 Variable 代替。",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)
 
 
 # %% ../../src/notebooks/01_rv_args (arguments are random variables).ipynb 6

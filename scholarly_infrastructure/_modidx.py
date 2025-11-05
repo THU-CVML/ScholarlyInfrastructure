@@ -58,6 +58,10 @@ d = {
                 "llm_api.html#endpoint.__init__",
                 "scholarly_infrastructure/llm_api.py",
             ),
+            "scholarly_infrastructure.llm_api.Endpoint.__repr__": (
+                "llm_api.html#endpoint.__repr__",
+                "scholarly_infrastructure/llm_api.py",
+            ),
             "scholarly_infrastructure.llm_api.Endpoint.chat_completions_create": (
                 "llm_api.html#endpoint.chat_completions_create",
                 "scholarly_infrastructure/llm_api.py",
@@ -68,6 +72,10 @@ d = {
             ),
             "scholarly_infrastructure.llm_api.download_file": (
                 "llm_api.html#download_file",
+                "scholarly_infrastructure/llm_api.py",
+            ),
+            "scholarly_infrastructure.llm_api.extract_code_content": (
+                "llm_api.html#extract_code_content",
                 "scholarly_infrastructure/llm_api.py",
             ),
             "scholarly_infrastructure.llm_api.flatten_dict": (
@@ -225,6 +233,10 @@ d = {
             )
         },
         "scholarly_infrastructure.rv_args.nucleus": {
+            "scholarly_infrastructure.rv_args.nucleus.DependentVariable": (
+                "rv_args (arguments are random variables).html#dependentvariable",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
             "scholarly_infrastructure.rv_args.nucleus.ExperimentModule": (
                 "rv_args (arguments are random variables).html#experimentmodule",
                 "scholarly_infrastructure/rv_args/nucleus.py",
@@ -273,6 +285,10 @@ d = {
                 "rv_args (arguments are random variables).html#experimentmodule.setup",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
+            "scholarly_infrastructure.rv_args.nucleus.IndependentVariable": (
+                "rv_args (arguments are random variables).html#independentvariable",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
             "scholarly_infrastructure.rv_args.nucleus.PythonField": (
                 "rv_args (arguments are random variables).html#pythonfield",
                 "scholarly_infrastructure/rv_args/nucleus.py",
@@ -297,16 +313,20 @@ d = {
                 "rv_args (arguments are random variables).html#randomvariable",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
-            "scholarly_infrastructure.rv_args.nucleus.RandomVariable.__call__": (
-                "rv_args (arguments are random variables).html#randomvariable.__call__",
+            "scholarly_infrastructure.rv_args.nucleus.RandomVariable.__init__": (
+                "rv_args (arguments are random variables).html#randomvariable.__init__",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
-            "scholarly_infrastructure.rv_args.nucleus.RandomVariable.__invert__": (
-                "rv_args "
-                "(arguments "
-                "are "
-                "random "
-                "variables).html#randomvariable.__invert__",
+            "scholarly_infrastructure.rv_args.nucleus.Variable": (
+                "rv_args (arguments are random variables).html#variable",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.Variable.__call__": (
+                "rv_args (arguments are random variables).html#variable.__call__",
+                "scholarly_infrastructure/rv_args/nucleus.py",
+            ),
+            "scholarly_infrastructure.rv_args.nucleus.Variable.__invert__": (
+                "rv_args (arguments are random variables).html#variable.__invert__",
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
             "scholarly_infrastructure.rv_args.nucleus.argparse_parser_add_arguments": (
