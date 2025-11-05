@@ -11,6 +11,7 @@ __all__ = [
     "download_file",
     "local_video_to_base64_uri",
     "separate_think_and_other",
+    "extract_code_content",
     "get_env_bool",
     "Endpoint",
     "flatten_dict",
@@ -259,6 +260,27 @@ def separate_think_and_other(text: str) -> Tuple[Optional[str], str]:
 
 
 # %% ../src/notebooks/04_llm_api.ipynb 15
+import re
+from typing import Optional
+
+
+def extract_code_content(text: str, target_lang: Optional[str] = None) -> str:
+    """
+    从字符串中提取第一个 Markdown 代码块的内容。
+    如果没有代码块，则直接返回原文本。
+    """
+    if target_lang is None:
+        pattern = re.compile(r"```(?:[a-zA-Z0-9_+-]*)\n(.*?)```", re.DOTALL)
+    else:
+        pattern = re.compile(rf"```{target_lang}\n(.*?)```", re.DOTALL)
+    match = pattern.search(text)
+    if match:
+        return match.group(1).strip()
+    else:
+        return text.strip()
+
+
+# %% ../src/notebooks/04_llm_api.ipynb 17
 import os
 import asyncio
 import time
@@ -329,6 +351,13 @@ class Endpoint:
             self.async_client = AsyncOpenAI(base_url=self.base_url, api_key=api_key)
             self.client = OpenAI(base_url=self.base_url, api_key=api_key)
 
+    def __repr__(self) -> str:
+        return (
+            f"Endpoint(base_url={self.base_url!r}, "
+            f"model_name_or_path={self.model_name_or_path!r}, "
+            f"use_azure={self.async_client.__class__.__name__.startswith('AsyncAzureOpenAI')})"
+        )
+
     async def chat_completions_create(self, **kwargs):
         return await self.async_client.chat.completions.create(
             model=self.model_name_or_path, **kwargs
@@ -340,7 +369,7 @@ class Endpoint:
         )
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 17
+# %% ../src/notebooks/04_llm_api.ipynb 19
 def flatten_dict(d: dict, level: int, parent_key: str = "", sep: str = ".") -> dict:
     items = []
     for k, v in d.items():
