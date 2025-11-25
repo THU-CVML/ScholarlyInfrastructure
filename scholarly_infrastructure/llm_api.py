@@ -103,75 +103,99 @@ def is_local_file_path(s: str) -> bool:
         return False
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 9
+# %% ../src/notebooks/04_llm_api.ipynb 10
 import aiohttp
+import aiofiles
 import tempfile
-import os
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
+from urllib.parse import urlparse, unquote
 
 
-async def download_file(video_url: str, verbose: bool = False) -> Optional[str]:
+async def download_file(
+    video_url: str, verbose: bool = False, target: Optional[Union[str, Path]] = None
+) -> Optional[str]:
     """
-    异步下载文件到本地临时文件，并返回临时文件路径
+    异步下载文件。支持指定路径、自动创建目录及非阻塞写入。
 
-    :param video_url: 要下载的文件的URL
-    :param verbose: 是否打印详细信息
-    :return: 本地临时文件路径（下载失败返回None）
+    :param video_url: 文件URL
+    :param verbose: 是否打印详细日志 (保持在第二个参数以兼容旧代码)
+    :param target: 目标路径 (可以是目录或完整文件路径)。若为None，则生成临时文件。
+    :return: 文件的绝对路径字符串 (下载失败返回None)
     """
-    # 创建临时文件（默认在系统临时目录，关闭后自动删除，这里手动控制删除时机）
-    # mode='wb' 以二进制写模式打开，suffix保留原文件后缀（可选）
+    save_path: Path = Path()  # 初始化
+
     try:
-        # 提取URL中的文件名后缀（可选，用于临时文件保留后缀）
-        url_path = video_url.split("/")[-1]
-        suffix = os.path.splitext(url_path)[1] if "." in url_path else ""
+        # --- 1. 解析文件名 ---
+        # 使用 urllib 解析，比 split('/') 更安全，能处理 URL 编码
+        parsed_url = urlparse(video_url)
+        # unquote 将 %20 等转为正常字符，Path(..).name 获取文件名
+        url_filename = Path(unquote(parsed_url.path)).name
+        if not url_filename:
+            url_filename = "downloaded_file.tmp"  # 兜底文件名
 
-        # 创建临时文件，delete=False表示不自动删除，需要手动管理
-        with tempfile.NamedTemporaryFile(
-            mode="wb", suffix=suffix, delete=False
-        ) as temp_file:
-            temp_file_path = temp_file.name  # 保存临时文件路径
+        # --- 2. 确定保存路径 (Pathlib 逻辑) ---
+        if target:
+            target_path = Path(target)
 
-        # 异步下载文件
+            # 如果目标是一个已存在的目录，则拼接到该目录下
+            if target_path.is_dir():
+                save_path = target_path / url_filename
+            else:
+                # 否则视为完整文件路径
+                save_path = target_path
+                # 确保父目录存在 (相当于 mkdir -p)
+                save_path.parent.mkdir(parents=True, exist_ok=True)
+        else:
+            # 未指定路径，使用系统临时文件
+            suffix = Path(url_filename).suffix
+            # 创建一个临时文件来占位并获取路径 (delete=False 防止关闭即删)
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                save_path = Path(tmp.name)
+            # 此时文件已存在（空文件），我们只需获取路径，稍后用 aiofiles 覆盖写入
+
+        if verbose:
+            print(f"⬇️  开始下载: {video_url}")
+            print(f"📂 目标路径: {save_path}")
+
+        # --- 3. 异步下载与写入 (aiofiles) ---
+        timeout = aiohttp.ClientTimeout(total=600)
         async with aiohttp.ClientSession() as session:
-            async with session.get(
-                video_url, timeout=aiohttp.ClientTimeout(total=60)
-            ) as response:
+            async with session.get(video_url, timeout=timeout) as response:
                 if response.status != 200:
                     if verbose:
-                        print(f"下载失败，状态码：{response.status}")
-                    os.unlink(temp_file_path)  # 删除无效临时文件
+                        print(f"❌ 下载失败，状态码：{response.status}")
+                    # 清理占位的空文件
+                    if save_path.exists():
+                        save_path.unlink()
                     return None
 
-                # 分块写入临时文件
-                with open(temp_file_path, "wb") as f:
+                # 使用 aiofiles 进行异步写入，避免阻塞事件循环
+                async with aiofiles.open(save_path, "wb") as f:
                     async for chunk in response.content.iter_chunked(
                         1024 * 1024
                     ):  # 1MB 块
-                        f.write(chunk)
+                        await f.write(chunk)
 
         if verbose:
-            print(f"文件下载成功，临时路径：{temp_file_path}")
-        return temp_file_path
+            print(f"✅ 下载完成: {save_path}")
 
-    except aiohttp.ClientError as e:
-        if verbose:
-            print(f"网络错误：{str(e)}")
+        # 返回绝对路径字符串，方便外部调用
+        return str(save_path.absolute())
+
     except Exception as e:
         if verbose:
-            print(f"下载失败：{str(e)}")
-    finally:
-        # 若临时文件存在但未正常写入，清理文件
-        if (
-            "temp_file_path" in locals()
-            and os.path.exists(temp_file_path)
-            and os.path.getsize(temp_file_path) == 0
-        ):
-            os.unlink(temp_file_path)
-
-    return None
+            print(f"❌ 下载出错: {e}")
+        # 发生异常时的清理工作
+        if save_path and save_path.exists():
+            try:
+                save_path.unlink()  # pathlib 的删除文件方法
+            except OSError:
+                pass
+        return None
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 11
+# %% ../src/notebooks/04_llm_api.ipynb 13
 import base64
 import os
 import asyncio
@@ -224,7 +248,7 @@ async def local_video_to_base64_uri(file_path: str) -> str:
     return f"data:video/{file_extension};base64,{base64_encoded_video}"
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 13
+# %% ../src/notebooks/04_llm_api.ipynb 15
 import re
 from typing import Optional, Tuple
 
@@ -259,7 +283,7 @@ def separate_think_and_other(text: str) -> Tuple[Optional[str], str]:
     return think_content, other_content
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 15
+# %% ../src/notebooks/04_llm_api.ipynb 17
 import re
 from typing import Optional
 
@@ -280,7 +304,7 @@ def extract_code_content(text: str, target_lang: Optional[str] = None) -> str:
         return text.strip()
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 17
+# %% ../src/notebooks/04_llm_api.ipynb 19
 import os
 import asyncio
 import time
@@ -369,7 +393,7 @@ class Endpoint:
         )
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 19
+# %% ../src/notebooks/04_llm_api.ipynb 21
 def flatten_dict(d: dict, level: int, parent_key: str = "", sep: str = ".") -> dict:
     items = []
     for k, v in d.items():
