@@ -8,6 +8,7 @@ __all__ = [
     "get_pydantic_version",
     "is_url",
     "is_local_file_path",
+    "detect_and_rename",
     "download_file",
     "local_video_to_base64_uri",
     "separate_think_and_other",
@@ -104,6 +105,88 @@ def is_local_file_path(s: str) -> bool:
 
 
 # %% ../src/notebooks/04_llm_api.ipynb 10
+import struct
+import aiofiles
+from pathlib import Path
+from typing import Optional
+
+# Try importing filetype, treat as optional dependency
+try:
+    import filetype
+except ImportError:
+    filetype = None
+
+
+async def detect_and_rename(
+    fpath: Path,  # The current file path
+    verbose: bool = False,  # Whether to print log messages
+) -> Path:
+    "Async reads file magic bytes (using filetype or fallback) and renames if needed."
+
+    final_path = fpath
+    if not fpath.exists():
+        return fpath
+
+    # Common magic numbers mapping (Fallback if filetype is missing/fails)
+    signatures = {
+        b"\xff\xd8\xff": ".jpg",
+        b"\x89PNG\r\n\x1a\n": ".png",
+        b"GIF87a": ".gif",
+        b"GIF89a": ".gif",
+        b"%PDF": ".pdf",
+        b"\x1aE\xdf\xa3": ".webm",
+    }
+
+    try:
+        # Async read the first 2KB (enough for filetype and most headers)
+        head = b""
+        async with aiofiles.open(fpath, "rb") as f:
+            head = await f.read(2048)
+
+        ext = None
+
+        # --- Strategy 1: Use 'filetype' library if available ---
+        if filetype:
+            kind = filetype.guess(head)
+            if kind:
+                ext = "." + kind.extension
+
+        # --- Strategy 2: Fallback manual detection ---
+        if ext is None:
+            # Check dictionary signatures
+            for sig, likely_ext in signatures.items():
+                if head.startswith(sig):
+                    ext = likely_ext
+                    break
+
+            # Check MP4/MOV (ftyp at index 4)
+            if ext is None and len(head) > 12:
+                if head[4:8] == b"ftyp":
+                    ext = ".mp4"
+
+        # --- Rename Logic ---
+        if ext:
+            if fpath.suffix.lower() != ext:
+                new_path = fpath.with_suffix(ext)
+                # Rename is an OS metadata op, typically fast enough to be sync
+                fpath.rename(new_path)
+                final_path = new_path
+                if verbose:
+                    print(f"🔄 Renamed: {fpath.name} -> {final_path.name}")
+            elif verbose:
+                print(f"✅ Extension verified: {ext}")
+        else:
+            if verbose:
+                print("⚠️ Could not detect file type, keeping original name.")
+
+    except Exception as e:
+        if verbose:
+            print(f"⚠️ Extension detection failed: {e}")
+
+    return final_path
+
+
+# %% ../src/notebooks/04_llm_api.ipynb 13
 import aiohttp
 import aiofiles
 import tempfile
@@ -113,89 +196,69 @@ from urllib.parse import urlparse, unquote
 
 
 async def download_file(
-    video_url: str, verbose: bool = False, target: Optional[Union[str, Path]] = None
+    video_url: str,  # The URL to download
+    verbose: bool = False,  # Toggle verbose logging
+    target: Optional[Union[str, Path]] = None,  # Target directory or full filepath
 ) -> Optional[str]:
-    """
-    异步下载文件。支持指定路径、自动创建目录及非阻塞写入。
+    "Async downloads a file, then auto-detects and corrects the file extension."
 
-    :param video_url: 文件URL
-    :param verbose: 是否打印详细日志 (保持在第二个参数以兼容旧代码)
-    :param target: 目标路径 (可以是目录或完整文件路径)。若为None，则生成临时文件。
-    :return: 文件的绝对路径字符串 (下载失败返回None)
-    """
-    save_path: Path = Path()  # 初始化
+    save_path: Path = Path()
 
     try:
-        # --- 1. 解析文件名 ---
-        # 使用 urllib 解析，比 split('/') 更安全，能处理 URL 编码
+        # --- 1. Setup Path ---
         parsed_url = urlparse(video_url)
-        # unquote 将 %20 等转为正常字符，Path(..).name 获取文件名
         url_filename = Path(unquote(parsed_url.path)).name
         if not url_filename:
-            url_filename = "downloaded_file.tmp"  # 兜底文件名
+            url_filename = "downloaded_file.tmp"
 
-        # --- 2. 确定保存路径 (Pathlib 逻辑) ---
         if target:
             target_path = Path(target)
-
-            # 如果目标是一个已存在的目录，则拼接到该目录下
             if target_path.is_dir():
                 save_path = target_path / url_filename
             else:
-                # 否则视为完整文件路径
                 save_path = target_path
-                # 确保父目录存在 (相当于 mkdir -p)
                 save_path.parent.mkdir(parents=True, exist_ok=True)
         else:
-            # 未指定路径，使用系统临时文件
             suffix = Path(url_filename).suffix
-            # 创建一个临时文件来占位并获取路径 (delete=False 防止关闭即删)
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                 save_path = Path(tmp.name)
-            # 此时文件已存在（空文件），我们只需获取路径，稍后用 aiofiles 覆盖写入
 
         if verbose:
-            print(f"⬇️  开始下载: {video_url}")
-            print(f"📂 目标路径: {save_path}")
+            print(f"⬇️ Start Download: {video_url} -> {save_path}")
 
-        # --- 3. 异步下载与写入 (aiofiles) ---
+        # --- 2. Async Download ---
         timeout = aiohttp.ClientTimeout(total=600)
         async with aiohttp.ClientSession() as session:
             async with session.get(video_url, timeout=timeout) as response:
                 if response.status != 200:
                     if verbose:
-                        print(f"❌ 下载失败，状态码：{response.status}")
-                    # 清理占位的空文件
+                        print(f"❌ Status {response.status}")
                     if save_path.exists():
                         save_path.unlink()
                     return None
 
-                # 使用 aiofiles 进行异步写入，避免阻塞事件循环
                 async with aiofiles.open(save_path, "wb") as f:
-                    async for chunk in response.content.iter_chunked(
-                        1024 * 1024
-                    ):  # 1MB 块
+                    async for chunk in response.content.iter_chunked(1024 * 1024):
                         await f.write(chunk)
 
-        if verbose:
-            print(f"✅ 下载完成: {save_path}")
+        # --- 3. Async Type Detection & Rename ---
+        # Await the new async helper function
+        final_path = await detect_and_rename(save_path, verbose=verbose)
 
-        # 返回绝对路径字符串，方便外部调用
-        return str(save_path.absolute())
+        return str(final_path.absolute())
 
     except Exception as e:
         if verbose:
-            print(f"❌ 下载出错: {e}")
-        # 发生异常时的清理工作
+            print(f"❌ Error: {e}")
         if save_path and save_path.exists():
             try:
-                save_path.unlink()  # pathlib 的删除文件方法
+                save_path.unlink()
             except OSError:
                 pass
         return None
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 13
+# %% ../src/notebooks/04_llm_api.ipynb 17
 import base64
 import os
 import asyncio
@@ -248,7 +311,7 @@ async def local_video_to_base64_uri(file_path: str) -> str:
     return f"data:video/{file_extension};base64,{base64_encoded_video}"
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 15
+# %% ../src/notebooks/04_llm_api.ipynb 19
 import re
 from typing import Optional, Tuple
 
@@ -283,7 +346,7 @@ def separate_think_and_other(text: str) -> Tuple[Optional[str], str]:
     return think_content, other_content
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 17
+# %% ../src/notebooks/04_llm_api.ipynb 21
 import re
 from typing import Optional
 
@@ -304,7 +367,7 @@ def extract_code_content(text: str, target_lang: Optional[str] = None) -> str:
         return text.strip()
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 19
+# %% ../src/notebooks/04_llm_api.ipynb 23
 import os
 import asyncio
 import time
@@ -393,7 +456,7 @@ class Endpoint:
         )
 
 
-# %% ../src/notebooks/04_llm_api.ipynb 21
+# %% ../src/notebooks/04_llm_api.ipynb 25
 def flatten_dict(d: dict, level: int, parent_key: str = "", sep: str = ".") -> dict:
     items = []
     for k, v in d.items():

@@ -70,6 +70,10 @@ d = {
                 "llm_api.html#endpoint.chat_completions_create_sync",
                 "scholarly_infrastructure/llm_api.py",
             ),
+            "scholarly_infrastructure.llm_api.detect_and_rename": (
+                "llm_api.html#detect_and_rename",
+                "scholarly_infrastructure/llm_api.py",
+            ),
             "scholarly_infrastructure.llm_api.download_file": (
                 "llm_api.html#download_file",
                 "scholarly_infrastructure/llm_api.py",

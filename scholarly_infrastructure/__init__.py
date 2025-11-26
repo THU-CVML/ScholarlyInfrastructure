@@ -25,6 +25,7 @@ __all__ = [
     "dataclass_for_torch_decorator",
     "default_on_exception",
     "deprecated_alias_of",
+    "detect_and_rename",
     "download_file",
     "ensure_array",
     "experiment",
