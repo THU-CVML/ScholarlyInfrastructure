@@ -137,7 +137,8 @@ def check_ipynb_file(filepath):
             logger.error(
                 f"   Problematic code: {e.text.strip() if e.text else 'Unknown'}"
             )
-            logger.exception(e)
+            logger.error(f"error message: {e.msg}")
+            # logger.exception(e)
 
     if not errors_found:
         logger.info(f"✅ {filepath} - No syntax errors found")
