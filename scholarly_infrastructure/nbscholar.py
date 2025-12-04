@@ -7,8 +7,11 @@ __all__ = [
     "functions",
     "read_settings_ini_none",
     "functions_dict",
-    "nbscholar_submodules",
     "nbscholar_submodules_to_ssh",
+    "nbscholar_submodules",
+    "check_ipynb_file",
+    "check_directory",
+    "nbscholar_check",
     "read_settings_ini",
     "nbscholar_export",
     "guess_notebooks_path",
@@ -25,19 +28,7 @@ from fastcore.script import call_parse
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 5
 functions = []
 
-
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 7
-@call_parse
-def nbscholar_submodules(mode: str = "to_ssh", *args, **kwargs):
-    if mode == "to_ssh":
-        nbscholar_submodules_to_ssh(*args, **kwargs)
-    else:
-        raise ValueError(f"Unknown mode: {mode}")
-
-
-functions.append(nbscholar_submodules)
-
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 8
 import re
 import subprocess
 from pathlib import Path
@@ -89,13 +80,129 @@ def nbscholar_submodules_to_ssh(path: str = "."):
         logger.info("ℹ️ 没有发现 HTTPS 格式的子模块 URL，无需修改。")
 
 
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 8
+@call_parse
+def nbscholar_submodules(mode: str = "to_ssh", *args, **kwargs):
+    if mode == "to_ssh":
+        nbscholar_submodules_to_ssh(*args, **kwargs)
+    else:
+        raise ValueError(f"Unknown mode: {mode}")
+
+
+functions.append(nbscholar_submodules)
+
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 13
+import json
+import ast
+import os
+import argparse
+from pathlib import Path
+from .logging.nucleus import logger
+
+
+def check_ipynb_file(filepath):
+    """
+    Check a single ipynb file for Python syntax errors in code cells.
+    Returns True if no errors, False otherwise.
+    """
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            notebook = json.load(f)
+    except json.JSONDecodeError as e:
+        logger.error(f"❌ {filepath} - Invalid JSON: {e}")
+        return False
+
+    if "cells" not in notebook:
+        logger.warning(f"⚠️  {filepath} - No 'cells' key found (malformed notebook)")
+        return True  # Not a syntax error in code, skip
+
+    errors_found = False
+
+    for cell_idx, cell in enumerate(notebook["cells"], start=1):
+        if cell["cell_type"] != "code":
+            continue  # Skip non-code cells
+
+        # Join source lines into a single string
+        code = "".join(cell["source"])
+        if not code.strip():
+            continue  # Skip empty code cells
+
+        try:
+            # Check for syntax errors using ast.parse
+            ast.parse(code)
+        except SyntaxError as e:
+            errors_found = True
+            logger.error(f"\n❌ {filepath}")
+            logger.error(f"   Cell {cell_idx}, Line {e.lineno}, Column {e.offset}")
+            logger.error(
+                f"   Problematic code: {e.text.strip() if e.text else 'Unknown'}"
+            )
+            logger.exception(e)
+
+    if not errors_found:
+        logger.info(f"✅ {filepath} - No syntax errors found")
+    return not errors_found
+
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 14
+from .logging.nucleus import logger
+
+
+def check_directory(dirpath):
+    """
+    Check all ipynb files in a directory (and subdirectories) for syntax errors.
+    Returns True if all files are error-free, False otherwise.
+    """
+    all_ok = True
+    file_count = 0
+    error_count = 0
+
+    dir_path = Path(dirpath)
+    # 使用rglob递归查找所有ipynb文件
+    for filepath in dir_path.rglob("*.ipynb"):
+        file_count += 1
+        if not check_ipynb_file(str(filepath)):
+            error_count += 1
+            all_ok = False
+
+    logger.info("\n--- Summary ---")
+    logger.info(f"Checked {file_count} .ipynb files")
+    logger.info(f"Found errors in {error_count} files")
+    logger.info(f"All files syntax error-free: {'Yes' if all_ok else 'No'}")
+    return all_ok
+
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 15
+from fastcore.script import call_parse
+
+
+@call_parse
+def nbscholar_check(
+    target_path: str = ".",  # Path to .ipynb file or directory containing .ipynb files
+):
+    """
+    Check .ipynb files for severe Python syntax errors (indent, missing colons/comma, etc.)
+    """
+    if not os.path.exists(target_path):
+        raise FileNotFoundError(f"❌ Path does not exist: {target_path}")
+
+    if os.path.isfile(target_path):
+        if not target_path.endswith(".ipynb"):
+            raise ValueError(f"❌ Not a .ipynb file: {target_path}")
+        check_ipynb_file(target_path)
+    else:
+        check_directory(target_path)
+
+
+functions.append(nbscholar_check)
+
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 17
 import configparser
 import os
 from pathlib import Path
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 14
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 18
 # from skinfra.experiment import load_overlaying_config
 def read_settings_ini(
     directory: str, item="nbs_path", track="DEFAULT", ini_name="settings.ini"
@@ -124,7 +231,7 @@ def read_settings_ini(
     return config[track][item]
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 15
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 19
 import subprocess
 import os
 from .logging.nucleus import logger
@@ -134,6 +241,10 @@ from .logging.nucleus import logger
 def nbscholar_export(path: str = "."):
     res = os.system("nbdev_export")
     if res != 0:
+        logger.error(
+            "nbdev_export failed, now I will use `nbscholar_check` to help you locate the error. "
+        )
+        nbscholar_check(path)
         raise Exception("nbdev_export failed")
     # 读取 settings.ini 的 lib_path
     lib_path = read_settings_ini(path, item="lib_path")
@@ -154,14 +265,14 @@ def nbscholar_export(path: str = "."):
 functions.append(nbscholar_export)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 19
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 23
 import os
 import nbformat
 import re
 from nbformat.notebooknode import NotebookNode, from_dict
 from . import default_on_exception
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 20
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 24
 read_settings_ini_none = default_on_exception(read_settings_ini, default_value=None)
 
 
@@ -172,11 +283,11 @@ def guess_notebooks_path(directory="."):
     return read_settings_ini_none(directory)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 23
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 27
 from copy import deepcopy
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 24
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 28
 def split_import_and_code_cells(notebook, inplace=True):
     """
     Process a Jupyter Notebook file, splitting cells with both import and non-import lines into two cells.
@@ -240,7 +351,7 @@ def split_import_and_code_cells(notebook, inplace=True):
     return notebook
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 26
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 30
 def operate_on_notebook_in(
     input_path, output_path=None, operation=split_import_and_code_cells
 ):
@@ -254,7 +365,7 @@ def operate_on_notebook_in(
         nbformat.write(notebook, f)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 27
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 31
 def process_notebooks_in_folder(folder_path, operation=split_import_and_code_cells):
     """
     Traverse all .ipynb files in a folder and apply the cell-splitting logic.
@@ -269,7 +380,7 @@ def process_notebooks_in_folder(folder_path, operation=split_import_and_code_cel
                 operate_on_notebook_in(notebook_path, operation=operation)
 
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 28
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 32
 @call_parse
 def nbscholar_separate(path: str = "."):
     if os.path.isfile(path):
@@ -283,7 +394,7 @@ def nbscholar_separate(path: str = "."):
 
 functions.append(nbscholar_separate)
 
-# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 30
+# %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 34
 functions_dict = {v.__name__.replace("nbscholar_", ""): v for v in functions}
 
 

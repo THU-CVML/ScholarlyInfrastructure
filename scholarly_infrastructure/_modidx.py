@@ -151,12 +151,24 @@ d = {
             ),
         },
         "scholarly_infrastructure.nbscholar": {
+            "scholarly_infrastructure.nbscholar.check_directory": (
+                "nbscholar (nbdev extensions).html#check_directory",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
+            "scholarly_infrastructure.nbscholar.check_ipynb_file": (
+                "nbscholar (nbdev extensions).html#check_ipynb_file",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
             "scholarly_infrastructure.nbscholar.guess_notebooks_path": (
                 "nbscholar (nbdev extensions).html#guess_notebooks_path",
                 "scholarly_infrastructure/nbscholar.py",
             ),
             "scholarly_infrastructure.nbscholar.nbscholar": (
                 "nbscholar (nbdev extensions).html#nbscholar",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
+            "scholarly_infrastructure.nbscholar.nbscholar_check": (
+                "nbscholar (nbdev extensions).html#nbscholar_check",
                 "scholarly_infrastructure/nbscholar.py",
             ),
             "scholarly_infrastructure.nbscholar.nbscholar_export": (
