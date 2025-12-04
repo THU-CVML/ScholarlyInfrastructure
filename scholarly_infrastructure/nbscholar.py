@@ -206,14 +206,19 @@ def check_ipynb_file(filepath):
         try:
             ast.parse(normalized_code)
         except SyntaxError as e:
-            errors_found = True
-            logger.error(f"\n❌ {filepath}")
-            logger.error(f"   Cell {cell_idx}, Line {e.lineno}, Column {e.offset}")
+            abs_path = str(Path(filepath).resolve())
+            line = e.lineno or 1
+            col = e.offset or 0
+            # VSCode 友好格式：/abs/path/to/file:line:column: message
             logger.error(
-                f"   Problematic code: {e.text.strip() if e.text else 'Unknown'}"
+                f"{abs_path}:{line}:{col}: SyntaxError: {e.msg} (cell {cell_idx})"
             )
-            logger.error(f"error message: {e.msg}")
-            # logger.exception(e)
+            if e.text:
+                line_text = e.text.rstrip()
+                logger.error(line_text)
+                if col > 0:
+                    logger.error(" " * (col - 1) + "^")
+            errors_found = True
 
     if not errors_found:
         logger.info(f"✅ {filepath} - No syntax errors found")
