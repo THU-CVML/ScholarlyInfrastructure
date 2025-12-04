@@ -151,6 +151,10 @@ d = {
             ),
         },
         "scholarly_infrastructure.nbscholar": {
+            "scholarly_infrastructure.nbscholar._normalize_ipython_code": (
+                "nbscholar (nbdev extensions).html#_normalize_ipython_code",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
             "scholarly_infrastructure.nbscholar.check_directory": (
                 "nbscholar (nbdev extensions).html#check_directory",
                 "scholarly_infrastructure/nbscholar.py",
@@ -161,6 +165,10 @@ d = {
             ),
             "scholarly_infrastructure.nbscholar.guess_notebooks_path": (
                 "nbscholar (nbdev extensions).html#guess_notebooks_path",
+                "scholarly_infrastructure/nbscholar.py",
+            ),
+            "scholarly_infrastructure.nbscholar.is_export_cell": (
+                "nbscholar (nbdev extensions).html#is_export_cell",
                 "scholarly_infrastructure/nbscholar.py",
             ),
             "scholarly_infrastructure.nbscholar.nbscholar": (

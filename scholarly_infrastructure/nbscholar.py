@@ -9,6 +9,7 @@ __all__ = [
     "functions_dict",
     "nbscholar_submodules_to_ssh",
     "nbscholar_submodules",
+    "is_export_cell",
     "check_ipynb_file",
     "check_directory",
     "nbscholar_check",
@@ -94,15 +95,81 @@ functions.append(nbscholar_submodules)
 # %% ../src/notebooks/03_nbscholar (nbdev extensions).ipynb 13
 import json
 import ast
+import re
 import os
 import argparse
 from pathlib import Path
 from .logging.nucleus import logger
 
 
+def is_export_cell(code: str) -> bool:
+    """
+    Return True if the first non-empty line starts with '#| export' or '#| exporti'.
+    """
+    lines = code.splitlines()
+    first_idx = next((i for i, l in enumerate(lines) if l.strip()), None)
+    if first_idx is None:
+        return False
+    first = lines[first_idx].strip()
+    return re.match(r"^#\s*\|\s*exporti?\b", first) is not None
+
+
+def _normalize_ipython_code(code: str):
+    """
+    Normalize IPython syntax so we can safely run ast.parse.
+    Returns:
+      - str: normalized Python code
+      - None: skip this cell (non-Python cell magic like %%bash/%%html/%%markdown/etc.)
+    """
+    lines = code.splitlines()
+
+    # Find first non-empty line
+    first_idx = next((i for i, l in enumerate(lines) if l.strip()), None)
+    if first_idx is None:
+        return ""
+
+    first = lines[first_idx].lstrip()
+    if first.startswith("%%"):
+        magic = first[2:].strip().split()[0].lower() if len(first) > 2 else ""
+        non_python_magics = {
+            "bash",
+            "sh",
+            "html",
+            "markdown",
+            "js",
+            "javascript",
+            "latex",
+            "sql",
+            "ruby",
+            "perl",
+            "svg",
+            "writefile",
+            "cython",
+        }
+        # Non-Python cell magic: skip the whole cell from syntax checking
+        if magic in non_python_magics or magic == "":
+            return None
+        # Python-related cell magic: drop the magic line, keep the rest
+        lines.pop(first_idx)
+
+    def is_line_magic(s: str) -> bool:
+        return s.lstrip().startswith("%")
+
+    def is_introspection_line(s: str) -> bool:
+        t = s.strip()
+        return t.startswith("?") or t.endswith("?") or t.endswith("??")
+
+    filtered = [
+        ln for ln in lines if not is_line_magic(ln) and not is_introspection_line(ln)
+    ]
+    return "\n".join(filtered)
+
+
 def check_ipynb_file(filepath):
     """
     Check a single ipynb file for Python syntax errors in code cells.
+    For cells starting with '#| export' or '#| exporti', strictly enforce Python AST (no IPython syntax allowed).
+    For normal cells, allow IPython syntax (%%, %, ?/??) by normalizing or skipping those lines.
     Returns True if no errors, False otherwise.
     """
     try:
@@ -119,17 +186,25 @@ def check_ipynb_file(filepath):
     errors_found = False
 
     for cell_idx, cell in enumerate(notebook["cells"], start=1):
-        if cell["cell_type"] != "code":
+        if cell.get("cell_type") != "code":
             continue  # Skip non-code cells
 
-        # Join source lines into a single string
-        code = "".join(cell["source"])
-        if not code.strip():
+        raw_code = "".join(cell.get("source", []))
+        if not raw_code.strip():
             continue  # Skip empty code cells
 
+        # Export cells: strict AST on raw code; Non-export: normalized AST
+        if is_export_cell(raw_code):
+            normalized_code = raw_code
+        else:
+            normalized_code = _normalize_ipython_code(raw_code)
+
+        # Skip non-Python IPython cells (e.g., %%bash)
+        if normalized_code is None or not normalized_code.strip():
+            continue
+
         try:
-            # Check for syntax errors using ast.parse
-            ast.parse(code)
+            ast.parse(normalized_code)
         except SyntaxError as e:
             errors_found = True
             logger.error(f"\n❌ {filepath}")

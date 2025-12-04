@@ -50,6 +50,7 @@ __all__ = [
     "import_name",
     "infra",
     "is_experiment_setting",
+    "is_export_cell",
     "is_local_file_path",
     "is_url",
     "iterate_path_hierarchy",
