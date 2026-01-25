@@ -8,14 +8,18 @@ from . import nucleus
 from . import rv_args
 
 from .experiment import (
+    auto_optuna,
     deprecated_alias_of,
     get_config,
     iterate_path_hierarchy,
     load_config,
     load_overlaying_config,
+    main,
     nucleus,
+    objective,
     read_overlaying_config,
     save_config,
+    set_nested_key,
 )
 from .fun_star import (
     foo,
@@ -128,6 +132,7 @@ __all__ = [
     "argparse_parser_add_arguments",
     "author_name_en_us",
     "author_name_zh_cn",
+    "auto_optuna",
     "check_directory",
     "check_ipynb_file",
     "combine_bilingual_pretty",
@@ -172,6 +177,7 @@ __all__ = [
     "local_video_to_base64_uri",
     "logger",
     "logging",
+    "main",
     "make_info_df",
     "nbscholar",
     "nbscholar_check",
@@ -180,6 +186,7 @@ __all__ = [
     "nbscholar_submodules",
     "nbscholar_submodules_to_ssh",
     "nucleus",
+    "objective",
     "operate_on_notebook_in",
     "optuna_suggest",
     "original_print",
@@ -198,6 +205,7 @@ __all__ = [
     "rv_missing_value",
     "save_config",
     "separate_think_and_other",
+    "set_nested_key",
     "setup_paths",
     "show_dataframe_doc",
     "split_import_and_code_cells",

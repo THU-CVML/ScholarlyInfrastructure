@@ -434,5 +434,6 @@ d = {
                 "scholarly_infrastructure/rv_args/nucleus.py",
             ),
         },
+        "src.scripts.auto_optuna": {},
     },
 }
