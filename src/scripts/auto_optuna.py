@@ -55,9 +55,13 @@ def objective(
     # 1. Create a unique directory for this trial that conforms to the expected path structure.
     base_path = Path(base_experiment_path)
     trial_naming_hyperparameters = optuna_config.get("trial_naming_hyperparameters", [])
+    # --- Setup Optuna Study ---
+    path_experiment_name = Path(base_path).name
+    path_backbone_name = Path(base_path).parent.parent.parent.name
     if trial_naming_hyperparameters:
-        # name_parts = [f"{base_path.name}"]
-        name_parts = []
+        name_parts = [path_backbone_name, path_experiment_name]
+        # name_parts = []
+        print(trial.params)
         for param in trial_naming_hyperparameters:
             if param in trial.params:
                 name_parts.append(f"{param}={trial.params[param]}")
@@ -65,8 +69,13 @@ def objective(
         trial_name = "/".join(name_parts)
     else:
         trial_name = f"{base_path.name}-trial-{trial.number}-{uuid.uuid4().hex[:8]}"
-    # trial_path = base_path.parent.parent / "optuna_sweeps" / trial_name
-    trial_path = base_path / "auto_optuna" / trial_name
+    
+    # is_debug = optuna_config.get("mode", "debug") == "debug"
+    # trial_set_name = "auto_optuna_debug" if is_debug else "auto_optuna"
+    trial_set_name = f"auto_optuna-{optuna_config.get('mode', 'debug')}"
+
+    trial_path = base_path.parent.parent / trial_set_name / trial_name
+    # trial_path = base_path / "auto_optuna" / trial_name
     trial_path.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"\n--- Starting Trial {trial.number} ---\nPath: {trial_path}")
@@ -76,23 +85,23 @@ def objective(
         base_experiment_path,
         trial_path,
         ignore=shutil.ignore_patterns(
-            "optuna_sweep", "results.json", "*.log", "__pycache__"
+            "optuna_sweep", "results.json", "*.log", "__pycache__", "auto_optuna" # 不能把自己也复制进去
         ),
     )
 
     # 2. Suggest hyperparameters and modify config files
     for config_filename, params in optuna_config.get("files", {}).items():
         config_path = trial_path / config_filename
-        if not config_path.exists():
-            print(
-                f"[Trial {trial.number}] Warning: Config file '{config_filename}' not found. Skipping."
-            )
-            continue
+        # if not config_path.exists():
+        #     print(
+        #         f"[Trial {trial.number}] Warning: Config file '{config_filename}' not found. Skipping."
+        #     )
+        #     continue
 
         # filetype = config_filename.split(".")[-1]
         # TODO 用户指定了一些参数，但是是overlay继承的，不是本身就有的，我们是否应该支持调参？
         # config_data: Dict = load_config(config_path)
-        config_data: Dict = load_overlaying_config(config_path)
+        config_data: Dict = load_overlaying_config(base_experiment_path, config_filename)
 
         for key_path, suggest_config in params.items():
             suggest_type = suggest_config["type"]
@@ -110,7 +119,7 @@ def objective(
     # 3. Launch run.py as a subprocess and capture its output
     # command list避免shell injection问题，但是我们信任输入者，应该尽可能支持的运行方式差不多，所以使用SHELL更好，特别是有环境变量的情况下。
     study_name = optuna_config.get("study_name", "auto_optuna_study")
-    os.environ["SWANLAB_PROJECT_NAME"] = study_name
+    os.environ["SWANLAB_PROJECT_NAME"] = study_name.replace("=", "_is_")
     os.environ["SWANLAB_EXPERIMENT_NAME"] = f"trial_{trial.number}"
 
     command_template: str = optuna_config.get(
@@ -122,7 +131,11 @@ def objective(
         f"[Trial {trial.number}] Executing command: \n{'-' * 40}\n{command}\n{'-' * 40}\n"
     )
 
-    log_path = trial_path / f"trial_{trial.number}.log"
+    # log_path = trial_path / f"trial_{trial.number}.log"
+    import datetime
+    time_start = datetime.datetime.now()
+
+    log_path = trial_path / "auto_optuna_trial_console.log"
     process = subprocess.Popen(
         command,
         shell=True,
@@ -142,6 +155,9 @@ def objective(
     )
 
     # Open log file to save the output
+    best_intermediate_metric_value: Optional[float] = None
+    metric_value: Optional[float] = None
+    direction = optuna_config.get("direction", "maximize")
     with open(log_path, "w") as log_file:
         for line in iter(process.stdout.readline, ""):
             sys.stdout.write(line)
@@ -153,6 +169,14 @@ def objective(
                 if intermediate_metric_key in log_data:
                     step = log_data.get("step")
                     metric_value = log_data[intermediate_metric_key]
+
+                    if (
+                        best_intermediate_metric_value is None
+                        or (direction == "maximize" and metric_value > best_intermediate_metric_value)
+                        or (direction == "minimize" and metric_value < best_intermediate_metric_value)
+                    ):
+                        best_intermediate_metric_value = metric_value
+
                     trial.report(metric_value, step)
                     print(
                         f"[Trial {trial.number}] Reported intermediate metric: Step {step}, {intermediate_metric_key}: {metric_value}"
@@ -168,10 +192,14 @@ def objective(
                 if final_metric_key in log_data:
                     final_value = log_data[final_metric_key]
                     print(f"[Trial {trial.number}] Found final metric: {final_value}")
-            except (json.JSONDecodeError, TypeError):
+            except (json.JSONDecodeError, TypeError, ValueError # json5 的错误类型
+                    ):
                 continue
 
     process.wait()
+    time_end = datetime.datetime.now()
+    duration = time_end - time_start
+    print(f"[Trial {trial.number}] Trial duration: {duration}")
     print(f"[Trial {trial.number}] Finished with exit code: {process.returncode}")
 
     if final_value is None:
@@ -179,6 +207,25 @@ def objective(
             f"[Trial {trial.number}] Could not find final metric '{final_metric_key}' in log. Assuming failure."
         )
         raise RuntimeError("Final metric could not be determined.")
+
+    # 在 trial 的位置保存一个 auto_optuna_result.json，方便后续分析。
+    result_summary = {
+        "trial_number": trial.number,
+        "trial_path": str(trial_path),
+        "time_start": time_start.isoformat(),
+        "time_end": time_end.isoformat(),
+        "duration_seconds": duration.total_seconds(),
+        "duration_hours": duration.total_seconds() / 3600,
+        "duration_human_readable": str(duration),
+    
+        "intermediate_metric_name": intermediate_metric_key,
+        "final_metric_name": final_metric_key,
+        "last_intermediate_metric_value": metric_value,
+        "best_intermediate_metric_value": best_intermediate_metric_value,
+        "final_metric_value": final_value,
+    }
+    save_config(result_summary, trial_path / "auto_optuna_result.json")
+    
     return final_value
 
 
@@ -192,7 +239,7 @@ from fastcore.script import call_parse
 @call_parse
 def auto_optuna(
     path_experiment: str = ".",  # Path to the base experiment directory containing configs (train_params.json, optuna_config.yaml, etc.)
-    mode: str = "ablation",  # Set the operation mode: 'tune' for hyperparameter search, 'ablation' for grid search.
+    mode: str = "debug",  # Set the operation mode: 'tune' for hyperparameter search, 'ablation' for grid search.
 ):
     """Auto Optuna Hyperparameter Optimization Script."""
     # --- Load Optuna Configuration ---
@@ -210,9 +257,10 @@ def auto_optuna(
 
     # --- Setup Optuna Study ---
     path_experiment_name = Path(path_experiment).name
+    path_backbone_name = Path(path_experiment).parent.parent.parent.name # TODO 这是个强约定
     study_name = optuna_config.get("study_name", "auto_optuna_study")
-    study_name = f"{study_name}_{path_experiment_name}_{mode}"  # TODO 是否需要配置
-    optuna_config.study_name = study_name
+    study_name = f"{study_name}-{path_backbone_name}-{path_experiment_name}-{mode}"  # TODO 是否需要配置
+    optuna_config["study_name"] = study_name
 
     n_trials = optuna_config.get("n_trials", 20)
     direction = optuna_config.get("direction", "maximize")
@@ -222,7 +270,7 @@ def auto_optuna(
     storage_name = f"sqlite:///{storage_path / 'auto_optuna_studies.db'}"
 
     # --- Configure Sampler and Pruner based on mode ---
-    if mode == "ablation":
+    if mode == "ablation" or mode=="debug":
         print(
             "\n[Mode: Ablation] Using Grid Search Sampler and disabling pruning for reproducibility."
         )
@@ -319,7 +367,7 @@ def main():
         "--mode",
         type=str,
         default="ablation",
-        choices=["tune", "ablation"],
+        choices=["tune", "ablation", "debug"],
         help="Set the operation mode: 'tune' for hyperparameter search, 'ablation' for grid search.",
     )
     args = parser.parse_args()
