@@ -29,21 +29,24 @@ It is built with [`nbdev`](https://nbdev.fast.ai), so the documentation *is* the
 - **`llm_api` — Unified LLM access.** A single interface for calling LLMs inside research and data-processing pipelines.
 - **`nbscholar` — `nbdev` workflow helpers.** `separate` / `export` / `check` commands that keep notebook-as-source development clean and reviewable.
 
+## Modules at a Glance
+
+- **`rv_args`** — Declare experiment arguments and hyperparameters as typed dataclass fields ("random variables"); automatically derive Optuna search spaces (`get_optuna_search_space`) and `argparse` interfaces (`argparse_parser_add_arguments`). See [`01_rv_args.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/01_rv_args%20%28arguments%20are%20random%20variables%29.ipynb).
+- **`experiment`** — `auto_optuna` wraps any config-driven research script into an Optuna study, with `tune` (CMA-ES + Hyperband pruning) and `ablation` (grid search, reproducible) modes. See [`01_experiment.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/01_experiment%20%28parameters%20management%29.ipynb).
+- **`logging`** — `richuru`-based rich logging; the `torch` helper inspects model structure and parameter counts at a glance. See [`02_logging.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/02_logging%20%28richuru%29.ipynb) and [`02a_torch.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/02a_torch%20%28inspect%20torch%20model%29.ipynb).
+- **`llm_api`** — A single interface for calling LLMs inside research and data pipelines. See [`04_llm_api.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/04_llm_api.ipynb).
+- **`nbscholar`** — `nbdev` workflow helpers (`separate` / `export` / `check`) that keep notebook-as-source development clean. See [`03_nbscholar.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/03_nbscholar%20%28nbdev%20extensions%29.ipynb).
+- **`nucleus` / `help`** — Core infrastructure and the library overview. See [`00_help.ipynb`](https://github.com/THU-CVML/ScholarlyInfrastructure/blob/main/src/notebooks/00_help%20%28library%20information%29.ipynb).
+
 ## Installation
 
-Install latest from the GitHub [repository][repo]:
+Install from the GitHub [repository][repo]:
 
 ```sh
 $ pip install git+https://github.com/THU-CVML/ScholarlyInfrastructure.git
 ```
 
-or from [conda][conda]:
-
-```sh
-$ conda install -c yecanming6666 scholarly_infrastructure
-```
-
-or from [pypi][pypi]:
+or from [pypi][pypi] (published on PyPI):
 
 ```sh
 $ pip install scholarly_infrastructure
@@ -53,7 +56,6 @@ Requires Python >= 3.7.
 
 [repo]: https://github.com/THU-CVML/ScholarlyInfrastructure
 [pypi]: https://pypi.org/project/scholarly_infrastructure/
-[conda]: https://anaconda.org/yecanming6666/scholarly_infrastructure
 
 ## 📖 **Usage**
 
