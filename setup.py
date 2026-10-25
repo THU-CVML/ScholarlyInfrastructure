@@ -1,4 +1,9 @@
-from pkg_resources import parse_version
+try:
+    # `pkg_resources` was removed from newer setuptools; `packaging` is the
+    # modern, always-available replacement (it ships with setuptools/pip).
+    from packaging.version import parse as parse_version
+except ImportError:  # pragma: no cover - only on very old setuptools
+    from pkg_resources import parse_version
 from configparser import ConfigParser
 import setuptools, shlex
 import os, glob
@@ -38,7 +43,7 @@ if pkg_data:
 # Add package data to setup_cfg for setuptools.setup(..., **setup_cfg)
 setup_cfg['package_data'] = package_data
 
-setuptools.setup(
+setup_kwargs = dict(
     name = cfg['lib_name'],
     license = lic[0],
     classifiers = [
@@ -51,7 +56,6 @@ setuptools.setup(
     include_package_data = True,
     install_requires = requirements,
     extras_require={ 'dev': dev_requirements },
-    dependency_links = cfg.get('dep_links','').split(),
     python_requires  = '>=' + cfg['min_python'],
     long_description = open('README.md', encoding='utf-8').read(),
     long_description_content_type = 'text/markdown',
@@ -71,5 +75,12 @@ setuptools.setup(
         # 顶层（''）的模块（py_modules）去 'nicknames' 目录里找
     },
     **setup_cfg)
+
+# `dependency_links` was removed from setuptools >= 77; only pass it when actually used.
+dep_links = cfg.get('dep_links','').split()
+if dep_links:
+    setup_kwargs['dependency_links'] = dep_links
+
+setuptools.setup(**setup_kwargs)
 
 
